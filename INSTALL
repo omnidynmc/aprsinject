@@ -1,0 +1,29 @@
+Package Dependencies
+--------------------
+- libmysqlpp (available via apt)
+- libpthread (available via apt)
+- libdl (should already be installed on ubuntu)
+- libmysqlclient (available via apt)
+
+Install
+-------
+Binary will be installed in the `pwd` of the package.
+
+./configure
+make install
+
+Module Install
+--------------
+Loadable modules will be installed in the package `pwd`/lib/
+
+cd modules
+make install
+cd ..
+
+Running
+-------
+./opentest -c etc/opentest.conf
+
+Shutdown
+--------
+Type /QUIT in the console
