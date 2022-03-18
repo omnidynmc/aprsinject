@@ -378,7 +378,7 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
-            << ",UNHEX(" << mysqlpp::quote << aprs->getString("aprs.packet.message.sql.id") << ")"
+            << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.sql.id")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ")";
