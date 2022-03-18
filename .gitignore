@@ -31,7 +31,9 @@
 *.out
 *.app
 
-/aprsfeed.pid
+/src/aprsinject
+/aprsinect.pid
+/aprsinject
 
 /logs/old
 /contrib
