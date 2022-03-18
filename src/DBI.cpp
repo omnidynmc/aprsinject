@@ -362,7 +362,7 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.message.target.id")
-            << ",(UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
+            << ",UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
             << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
@@ -378,7 +378,7 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
-            << ",(UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
+            << ",UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ")";
