@@ -102,7 +102,8 @@ namespace aprsinject {
              const std::string &db_host,
              const std::string &db_user,
              const std::string &db_pass,
-             const std::string &db_database);
+             const std::string &db_database,
+             const bool drop_defer = true);
       virtual ~Worker();
       void init();
       bool run();
@@ -159,6 +160,7 @@ namespace aprsinject {
       std::string _db_user;
       std::string _db_pass;
       std::string _db_database;
+      bool _drop_defer;
 
       Store *_store;
       stomp::Stomp *_stomp;

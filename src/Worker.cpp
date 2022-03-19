@@ -37,7 +37,8 @@ namespace aprsinject {
                  const std::string &db_host,
                  const std::string &db_user,
                  const std::string &db_pass,
-                 const std::string &db_database)
+                 const std::string &db_database,
+                 const bool drop_defer)
          : openframe::LogObject(thread_id),
            _stomp_hosts(stomp_hosts),
            _stomp_dest(stomp_dest),
@@ -47,7 +48,8 @@ namespace aprsinject {
            _db_host(db_host),
            _db_user(db_user),
            _db_pass(db_pass),
-           _db_database(db_database) {
+           _db_database(db_database),
+           _drop_defer(drop_defer) {
 
     _store = NULL;
     _stomp = NULL;
@@ -371,8 +373,11 @@ namespace aprsinject {
       } // if
       else {
         TLOG(LogWarn, << "Errors detected while handling result, try #" << retries+1 << std::endl);
-        retries++;
-        sleep(3);
+        bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred);
+        if (!shouldDrop) {
+          retries++;
+          sleep(3);
+        } // if
       } // else
     } // while
 
