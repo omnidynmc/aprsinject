@@ -330,12 +330,27 @@ namespace aprsinject {
       ok = true;
     } // try (transaction)
     catch(const mysqlpp::BadQuery &e) {
+
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::position}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
     } // catch
     catch(const mysqlpp::Exception &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::position}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: "
                     << " " << e.what()
                     << std::endl);
@@ -362,7 +377,7 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.message.target.id")
-            << ",UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
+            << ",UNHEX('" << aprs->getString("aprs.packet.message.sql.id") << "')"
             << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
@@ -378,7 +393,7 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
-            << ",UNHEX(" << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.sql.id") << ")"
+            << ",UNHEX('" << aprs->getString("aprs.packet.message.sql.id") << "')"
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ")";
@@ -509,12 +524,26 @@ namespace aprsinject {
       ok = true;
     } // try (transaction)
     catch(const mysqlpp::BadQuery &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::message}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::message}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
     } // catch
     catch(const mysqlpp::Exception &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::message}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::message}: "
                     << " " << e.what()
                     << std::endl);
@@ -615,12 +644,26 @@ namespace aprsinject {
       ok = true;
     } // try (transaction)
     catch(const mysqlpp::BadQuery &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::raw}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::raw}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
     } // catch
     catch(const mysqlpp::Exception &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::raw}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::raw}: "
                     << " " << e.what()
                     << std::endl);
@@ -686,6 +729,13 @@ namespace aprsinject {
       ok = true;
     } // try (transaction)
     catch(const mysqlpp::BadQuery &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::telemetry}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::telemetry}: #"
                     << e.errnum()
                     << " " << e.what()
@@ -693,6 +743,13 @@ namespace aprsinject {
 
     } // catch
     catch(const mysqlpp::Exception &e) {
+      STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
+      while(!stringList.empty()) {
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::telemetry}: "
+                       << stringList.front() << std::endl);
+        stringList.pop_front();
+      } // while
+
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::telemetry}: "
                     << " " << e.what()
                     << std::endl);
