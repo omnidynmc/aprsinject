@@ -5,6 +5,7 @@ aprsinject_SOURCES = \
                      main.cpp \
                      MemcachedController.cpp \
                      Store.cpp \
+                     Validator.cpp \
                      Worker.cpp
 
 aprsinject_LDFLAGS=-export-dynamic -lmysqlpp

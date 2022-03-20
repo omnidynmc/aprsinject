@@ -105,7 +105,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_aprsinject_OBJECTS = App.$(OBJEXT) DBI.$(OBJEXT) main.$(OBJEXT) \
-	MemcachedController.$(OBJEXT) Store.$(OBJEXT) Worker.$(OBJEXT)
+	MemcachedController.$(OBJEXT) Store.$(OBJEXT) \
+	Validator.$(OBJEXT) Worker.$(OBJEXT)
 aprsinject_OBJECTS = $(am_aprsinject_OBJECTS)
 aprsinject_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
@@ -132,7 +133,8 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/App.Po ./$(DEPDIR)/DBI.Po \
 	./$(DEPDIR)/MemcachedController.Po ./$(DEPDIR)/Store.Po \
-	./$(DEPDIR)/Worker.Po ./$(DEPDIR)/main.Po
+	./$(DEPDIR)/Validator.Po ./$(DEPDIR)/Worker.Po \
+	./$(DEPDIR)/main.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -313,6 +315,7 @@ aprsinject_SOURCES = \
                      main.cpp \
                      MemcachedController.cpp \
                      Store.cpp \
+                     Validator.cpp \
                      Worker.cpp
 
 aprsinject_LDFLAGS = -export-dynamic -lmysqlpp
@@ -413,6 +416,7 @@ include ./$(DEPDIR)/App.Po # am--include-marker
 include ./$(DEPDIR)/DBI.Po # am--include-marker
 include ./$(DEPDIR)/MemcachedController.Po # am--include-marker
 include ./$(DEPDIR)/Store.Po # am--include-marker
+include ./$(DEPDIR)/Validator.Po # am--include-marker
 include ./$(DEPDIR)/Worker.Po # am--include-marker
 include ./$(DEPDIR)/main.Po # am--include-marker
 
@@ -580,6 +584,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/DBI.Po
 	-rm -f ./$(DEPDIR)/MemcachedController.Po
 	-rm -f ./$(DEPDIR)/Store.Po
+	-rm -f ./$(DEPDIR)/Validator.Po
 	-rm -f ./$(DEPDIR)/Worker.Po
 	-rm -f ./$(DEPDIR)/main.Po
 	-rm -f Makefile
@@ -631,6 +636,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/DBI.Po
 	-rm -f ./$(DEPDIR)/MemcachedController.Po
 	-rm -f ./$(DEPDIR)/Store.Po
+	-rm -f ./$(DEPDIR)/Validator.Po
 	-rm -f ./$(DEPDIR)/Worker.Po
 	-rm -f ./$(DEPDIR)/main.Po
 	-rm -f Makefile
