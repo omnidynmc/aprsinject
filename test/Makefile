@@ -88,7 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
-noinst_PROGRAMS = validatortest$(EXEEXT)
+noinst_PROGRAMS = injecttest$(EXEEXT) validatortest$(EXEEXT)
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
@@ -103,14 +103,20 @@ CONFIG_HEADER = $(top_builddir)/include/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_validatortest_OBJECTS = validatortest.$(OBJEXT) Validator.$(OBJEXT) \
-	UnitTest.$(OBJEXT)
-validatortest_OBJECTS = $(am_validatortest_OBJECTS)
-validatortest_LDADD = $(LDADD)
+am_injecttest_OBJECTS = injecttest.$(OBJEXT)
+injecttest_OBJECTS = $(am_injecttest_OBJECTS)
+injecttest_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+injecttest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(injecttest_LDFLAGS) $(LDFLAGS) -o $@
+am_validatortest_OBJECTS = validatortest.$(OBJEXT) Validator.$(OBJEXT) \
+	UnitTest.$(OBJEXT)
+validatortest_OBJECTS = $(am_validatortest_OBJECTS)
+validatortest_LDADD = $(LDADD)
 validatortest_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(validatortest_LDFLAGS) $(LDFLAGS) \
@@ -131,7 +137,7 @@ DEFAULT_INCLUDES = -I. -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/UnitTest.Po ./$(DEPDIR)/Validator.Po \
-	./$(DEPDIR)/validatortest.Po
+	./$(DEPDIR)/injecttest.Po ./$(DEPDIR)/validatortest.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -151,8 +157,8 @@ AM_V_CXXLD = $(am__v_CXXLD_$(V))
 am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(validatortest_SOURCES)
-DIST_SOURCES = $(validatortest_SOURCES)
+SOURCES = $(injecttest_SOURCES) $(validatortest_SOURCES)
+DIST_SOURCES = $(injecttest_SOURCES) $(validatortest_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -353,6 +359,10 @@ clean-noinstPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+injecttest$(EXEEXT): $(injecttest_OBJECTS) $(injecttest_DEPENDENCIES) $(EXTRA_injecttest_DEPENDENCIES) 
+	@rm -f injecttest$(EXEEXT)
+	$(AM_V_CXXLD)$(injecttest_LINK) $(injecttest_OBJECTS) $(injecttest_LDADD) $(LIBS)
+
 validatortest$(EXEEXT): $(validatortest_OBJECTS) $(validatortest_DEPENDENCIES) $(EXTRA_validatortest_DEPENDENCIES) 
 	@rm -f validatortest$(EXEEXT)
 	$(AM_V_CXXLD)$(validatortest_LINK) $(validatortest_OBJECTS) $(validatortest_LDADD) $(LIBS)
@@ -365,6 +375,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/UnitTest.Po # am--include-marker
 include ./$(DEPDIR)/Validator.Po # am--include-marker
+include ./$(DEPDIR)/injecttest.Po # am--include-marker
 include ./$(DEPDIR)/validatortest.Po # am--include-marker
 
 $(am__depfiles_remade):
@@ -541,6 +552,7 @@ clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/UnitTest.Po
 	-rm -f ./$(DEPDIR)/Validator.Po
+	-rm -f ./$(DEPDIR)/injecttest.Po
 	-rm -f ./$(DEPDIR)/validatortest.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -589,6 +601,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/UnitTest.Po
 	-rm -f ./$(DEPDIR)/Validator.Po
+	-rm -f ./$(DEPDIR)/injecttest.Po
 	-rm -f ./$(DEPDIR)/validatortest.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic

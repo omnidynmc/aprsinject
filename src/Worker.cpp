@@ -100,7 +100,7 @@ namespace aprsinject {
       _store->set_elogger( elogger(), elog_name() );
       _store->init();
     } // try
-    catch(std::bad_alloc xa) {
+    catch(std::bad_alloc &xa) {
       assert(false);
     } // catch
   } // Worker::init
@@ -278,7 +278,7 @@ namespace aprsinject {
     try {
       ok = _stomp->next_frame(frame);
     } // try
-    catch(stomp::Stomp_Exception ex) {
+    catch(stomp::Stomp_Exception &ex) {
       TLOG(LogWarn, << "ERROR: " << ex.message() << std::endl);
       _connected = false;
       ++_stats.disconnects;
@@ -328,14 +328,14 @@ namespace aprsinject {
     try {
       result = new Result(body, time(NULL) );
     } // try
-    catch(std::bad_alloc xa) {
+    catch(std::bad_alloc &xa) {
       assert(false);
     } // catch
 
     try {
       result->_aprs = new aprs::APRS(body, timestamp);
     } // try
-    catch(aprs::APRS_Exception e) {
+    catch(aprs::APRS_Exception &e) {
       result->_aprs = NULL;
       result->_error = e.message();
       result->_status = Result::statusRejected;

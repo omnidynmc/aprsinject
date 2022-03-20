@@ -845,14 +845,14 @@ namespace aprsinject {
       res = query.execute(source);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertCallsign}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertCallsign}: "
                     << " " << e.what()
                     << std::endl);
@@ -1004,14 +1004,14 @@ namespace aprsinject {
       res = query.execute(hash, body);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertMessage}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertMessage}: "
                     << " " << e.what()
                     << std::endl);
@@ -1043,14 +1043,14 @@ namespace aprsinject {
       res = query.execute(name);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertName}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertName}: "
                     << " " << e.what()
                     << std::endl);
@@ -1082,14 +1082,14 @@ namespace aprsinject {
       res = query.execute(name);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertDest}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertDest}: "
                     << " " << e.what()
                     << std::endl);
@@ -1121,14 +1121,14 @@ namespace aprsinject {
       res = query.execute(name);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertDigi}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertDigi}: "
                     << " " << e.what()
                     << std::endl);
@@ -1189,14 +1189,14 @@ namespace aprsinject {
       res = query.execute(hash, body);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPath}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPath}: "
                     << " " << e.what()
                     << std::endl);
@@ -1258,14 +1258,14 @@ namespace aprsinject {
       res = query.execute(hash, body);
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertStatus}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertStatus}: "
                     << " " << e.what()
                     << std::endl);
@@ -1299,14 +1299,14 @@ namespace aprsinject {
       res = query.execute();
       numRows = res.rows();
     } // try
-    catch(mysqlpp::BadQuery e) {
+    catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPacket}: #"
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
       return false;
     } // catch
-    catch(mysqlpp::Exception e) {
+    catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPacket}: "
                     << " " << e.what()
                     << std::endl);

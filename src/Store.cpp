@@ -93,7 +93,7 @@ namespace aprsinject {
       _dbi->set_elogger( elogger(), elog_name() );
       _dbi->init();
     } // try
-    catch(std::bad_alloc xa) {
+    catch(std::bad_alloc &xa) {
       assert(false);
     } // catch
 
@@ -1017,7 +1017,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("icon", key, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1059,7 +1059,7 @@ namespace aprsinject {
     try {
       _memcached->put("icon", key, v.compile());
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1088,7 +1088,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("callsign", openframe::StringTool::toUpper(source), buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1122,7 +1122,7 @@ namespace aprsinject {
     try {
       _memcached->put("callsign", key, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1153,7 +1153,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("objectname", key, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1188,7 +1188,7 @@ namespace aprsinject {
     try {
       _memcached->put("objectname", key, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1216,7 +1216,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("message", hash, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1249,7 +1249,7 @@ namespace aprsinject {
     try {
       _memcached->put("message", hash, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1278,7 +1278,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("dest", openframe::StringTool::toUpper(dest), buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1312,7 +1312,7 @@ namespace aprsinject {
     try {
       _memcached->put("dest", key, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1341,7 +1341,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("digi", openframe::StringTool::toUpper(name), buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1375,7 +1375,7 @@ namespace aprsinject {
     try {
       _memcached->put("digi", key, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1447,7 +1447,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("path", hash, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1481,7 +1481,7 @@ namespace aprsinject {
     try {
       _memcached->put("path", hash, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1552,7 +1552,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("status", hash, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1586,7 +1586,7 @@ namespace aprsinject {
     try {
       _memcached->put("status", hash, id);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1619,7 +1619,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("duplicates", key, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1652,7 +1652,7 @@ namespace aprsinject {
     try {
       _memcached->put("duplicates", key, buf, 3600);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1683,7 +1683,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("position", key, buf);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1713,7 +1713,7 @@ namespace aprsinject {
     try {
       _memcached->put("position", key, buf, 3600);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1740,7 +1740,7 @@ namespace aprsinject {
     try {
       _memcached->put("locatorseen", key, openframe::stringify<time_t>( time(NULL) ) );
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1770,7 +1770,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("lastpositions", openframe::StringTool::toUpper(locator), ret);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1863,7 +1863,7 @@ namespace aprsinject {
     try {
       _memcached->put("lastpositions", key, out.str() );
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message()
                      << std::endl);
       _last_cache_fail_at = time(NULL);
@@ -1893,7 +1893,7 @@ namespace aprsinject {
     try {
       mcr = _memcached->get("positions", openframe::StringTool::toUpper(source), ret);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message() << std::endl);
       _last_cache_fail_at = time(NULL);
     } // catch
@@ -1962,7 +1962,7 @@ namespace aprsinject {
       // expire positions after a day has passed
       _memcached->put("positions", key, out.str(), 86400);
     } // try
-    catch(MemcachedController_Exception e) {
+    catch(MemcachedController_Exception &e) {
       TLOG(LogError, << e.message() << std::endl);
       _last_cache_fail_at = time(NULL);
       return false;

@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
   try {
     stomp = new stomp::Stomp(hosts, "user", "pass");
   } // try
-  catch(stomp::Stomp_Exception ex) {
+  catch(stomp::Stomp_Exception &ex) {
     std::cout << "ERROR: " << ex.message() << std::endl;
     return 0;
   } // catch
