@@ -35,6 +35,7 @@
 /aprsinect.pid
 /aprsinject
 /test/validatortest
+/test/injecttest
 
 /logs/old
 /contrib
