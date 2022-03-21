@@ -34,6 +34,7 @@ namespace aprsinject {
  **************************************************************************/
 
 #define NULL_OPTIONPP(x, y) ( x->getString(y).length() > 0 ? mysqlpp::SQLTypeAdapter(x->getString(y)) : mysqlpp::SQLTypeAdapter(mysqlpp::null) )
+#define NULL_VALID_OPTIONPP(v, s, x, y) (( x->getString(y).length() > 0 && v.is_valid(s, x->getString(y)) )  ? mysqlpp::SQLTypeAdapter(x->getString(y)) : mysqlpp::SQLTypeAdapter(mysqlpp::null) )
 
 
 /**************************************************************************

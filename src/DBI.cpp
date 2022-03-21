@@ -41,6 +41,7 @@
 #include <aprs/APRS.h>
 
 #include "DBI.h"
+#include "Validator.h"
 
 namespace aprsinject {
   using namespace openframe::loglevel;
@@ -79,6 +80,8 @@ namespace aprsinject {
   bool DBI::position(aprs::APRS *aprs) {
     assert(aprs != NULL);
 
+    Validator validator;
+
     std::string packet_id = aprs->getString("aprs.packet.id");
     std::string callsign_id = aprs->getString("aprs.packet.callsign.id");
     std::string name_id = aprs->isString("aprs.packet.object.name.id") ? aprs->getString("aprs.packet.object.name.id") : "0";
@@ -116,19 +119,19 @@ namespace aprsinject {
             << "," << name_id
             << "," << aprs->getString("aprs.packet.destination.id")
             << "," << aprs->getString("aprs.packet.path.id")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.direction")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.speed")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.altitude")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
             << "," << aprs->getString("aprs.packet.status.id")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.table")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.code")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.symbol.overlay")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.rng")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:1", aprs, "aprs.packet.symbol.overlay")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.rng")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.object.type")
             << "," << mysqlpp::quote << (aprs->isString("aprs.packet.weather") ? 'Y' : 'N')
             << "," << mysqlpp::quote << (aprs->isString("aprs.packet.telemetry") ? 'Y' : 'N')
             << "," << aprs->getString("aprs.packet.position.type.id")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.mic_e.raw.mbits")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:3", aprs, "aprs.packet.mic_e.raw.mbits")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
             << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), dest_id=VALUES(dest_id),"
@@ -148,12 +151,12 @@ namespace aprsinject {
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
               << "," << name_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.power")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.haat")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.gain")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.range")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.directivity")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.beacon")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.power")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.haat")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.gain")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.range")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.phg.directivity")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.phg.beacon")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id),"
@@ -172,10 +175,10 @@ namespace aprsinject {
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
               << "," << name_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dfr.bearing")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dfr.hits")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dfr.range")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dfr.quality")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dfr.bearing")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dfr.hits")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.dfr.range")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dfr.quality")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id),"
@@ -194,11 +197,11 @@ namespace aprsinject {
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
               << "," << name_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.power")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.haat")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.gain")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.range")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.phg.directivity")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.power")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.haat")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.gain")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.range")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.phg.directivity")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id),"
@@ -218,12 +221,12 @@ namespace aprsinject {
               << "," << callsign_id
               << "," << name_id
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.afrs.frequency")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.range")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.range.east")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.tone")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.afrs.range")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.afrs.range.east")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:6", aprs, "aprs.packet.afrs.tone")
               << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.type")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.frequency.receive")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.afrs.frequency.alternate")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:7", aprs, "aprs.packet.afrs.frequency.receive")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:7", aprs, "aprs.packet.afrs.frequency.alternate")
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.object.type")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
@@ -259,12 +262,12 @@ namespace aprsinject {
               << "(UNHEX('" << packet_id << "')"
               << "," << aprs->getString("aprs.packet.status.id")
               << "," << aprs->getString("aprs.packet.path.id")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.direction")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.speed")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.altitude")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.table")
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.code")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.timestamp")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.timestamp")
               << "," << aprs->timestamp()
               << ")";
         query.execute();
@@ -284,16 +287,16 @@ namespace aprsinject {
               << "," << callsign_id
               << "," << aprs->latitude()
               << "," << aprs->longitude()
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.direction")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.speed")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.gust")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.temperature.celcius")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.hour")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.midnight")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.24hour")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.humidity")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.direction")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.speed")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.gust")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.temperature.celcius")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.hour")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.midnight")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.24hour")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.humidity")
               << "," << std::fixed << std::setprecision(2) << atof( aprs->getString("aprs.packet.weather.pressure").c_str() ) // FIXME: no need to divide
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.luminosity.wsm")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.luminosity.wsm")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id),"
@@ -310,16 +313,16 @@ namespace aprsinject {
               <<                      "luminosity, create_ts) VALUES "
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.direction")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.speed")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.wind.gust")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.temperature.celcius")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.hour")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.midnight")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.rain.24hour")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.humidity")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.direction")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.speed")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.gust")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.temperature.celcius")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.hour")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.midnight")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.24hour")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.humidity")
               << "," << std::fixed << std::setprecision(2) << (atof(aprs->getString("aprs.packet.weather.pressure").c_str())) // FIXME: no need to divide
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.weather.luminosity.wsm")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.luminosity.wsm")
               << "," << aprs->timestamp()
               << ")";
         query.execute();
@@ -361,6 +364,8 @@ namespace aprsinject {
 
   bool DBI::message(aprs::APRS *aprs) {
     assert(aprs != NULL);
+
+    Validator validator;
 
     std::string packet_id = aprs->getString("aprs.packet.id");
     std::string callsign_id = aprs->getString("aprs.packet.callsign.id");
@@ -425,21 +430,21 @@ namespace aprsinject {
               <<                             "b_2, c_2, a_3, b_3, c_3, a_4, b_4, c_4, create_ts) VALUES "
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a0.a")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a0.b")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a0.c")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a1.a")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a1.b")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a1.c")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a2.a")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a2.b")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a2.c")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a3.a")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a3.b")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a3.c")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a4.a")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a4.b")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.a4.c")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a0.a")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a0.b")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a0.c")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a1.a")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a1.b")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a1.c")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a2.a")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a2.b")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a2.c")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a3.a")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a3.b")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a3.c")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a4.a")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a4.b")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a4.c")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), a_0=VALUES(a_0),"
@@ -455,19 +460,19 @@ namespace aprsinject {
               <<                             "d_2, d_3, d_4, d_5, d_6, d_7, create_ts) VALUES "
               << "(UNHEX('" << packet_id << "')"
               << "," << callsign_id
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog0")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog1")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog2")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog3")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog4")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital0")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital1")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital2")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital3")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital4")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital5")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital6")
-              << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital7")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:7", aprs, "aprs.packet.telemetry.analog0")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:6", aprs, "aprs.packet.telemetry.analog1")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:5", aprs, "aprs.packet.telemetry.analog2")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:6", aprs, "aprs.packet.telemetry.analog3")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:4", aprs, "aprs.packet.telemetry.analog4")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:5", aprs, "aprs.packet.telemetry.digital0")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:4", aprs, "aprs.packet.telemetry.digital1")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:3", aprs, "aprs.packet.telemetry.digital2")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:3", aprs, "aprs.packet.telemetry.digital3")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:3", aprs, "aprs.packet.telemetry.digital4")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:2", aprs, "aprs.packet.telemetry.digital5")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:2", aprs, "aprs.packet.telemetry.digital6")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:2", aprs, "aprs.packet.telemetry.digital7")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
               << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), a_0=VALUES(a_0),"
@@ -675,6 +680,8 @@ namespace aprsinject {
   bool DBI::telemetry(aprs::APRS *aprs) {
     assert(aprs != NULL);
 
+    Validator validator;
+
     std::string packet_id = aprs->getString("aprs.packet.id");
     std::string callsign_id = aprs->getString("aprs.packet.callsign.id");
 
@@ -690,13 +697,13 @@ namespace aprsinject {
             <<                             "analog_1, analog_2, analog_3, analog_4, digital, create_ts) VALUES "
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.sequence")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog0")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog1")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog2")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog3")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog4")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog0")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog1")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog2")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog3")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog4")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:8", aprs, "aprs.packet.telemetry.digital")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
             << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id),"
@@ -713,13 +720,13 @@ namespace aprsinject {
             <<                        "analog_2, analog_3, analog_4, digital, create_ts) VALUES "
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.sequence")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog0")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog1")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog2")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog3")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog4")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.digital")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog0")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog1")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog2")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog3")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog4")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:8", aprs, "aprs.packet.telemetry.digital")
             << "," << aprs->timestamp()
             << ")";
       query.execute();
