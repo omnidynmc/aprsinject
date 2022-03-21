@@ -698,11 +698,11 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog0")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog1")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog2")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog3")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog4")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog0")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog1")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog2")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog3")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog4")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:8", aprs, "aprs.packet.telemetry.digital")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
@@ -721,11 +721,11 @@ namespace aprsinject {
             << "(UNHEX('" << packet_id << "')"
             << "," << callsign_id
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog0")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog1")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog2")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog3")
-            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.analog4")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog0")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog1")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog2")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog3")
+            << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog4")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:8", aprs, "aprs.packet.telemetry.digital")
             << "," << aprs->timestamp()
             << ")";

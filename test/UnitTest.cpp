@@ -102,6 +102,8 @@ namespace aprsinject {
     _test("is:float", "-1.20", "is float valid", true);
     _test("is:float", "-.20", "is float valid", true);
     _test("is:float", ".20", "is float valid", true);
+    _test("is:float", "168.20", "is float valid", true);
+    _test("is:float", "168.00", "is float valid", true);
     _test("is:int", "1.20", "is int invalid", false);
     _test("is:int", "120", "is int valid", true);
     _test("is:int", "1", "is int valid", true);
