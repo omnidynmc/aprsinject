@@ -531,8 +531,7 @@ namespace aprsinject {
     catch(const mysqlpp::BadQuery &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
       while(!stringList.empty()) {
-        TLOG(LogInfo, << "*** MySQL++ Error{Inject::message}: "
-                       << stringList.front() << std::endl);
+        TLOG(LogInfo, << "*** MySQL++ Error{Inject::message}: " << stringList.front() << std::endl);
         stringList.pop_front();
       } // while
 
@@ -545,7 +544,7 @@ namespace aprsinject {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
       while(!stringList.empty()) {
         TLOG(LogInfo, << "*** MySQL++ Error{Inject::message}: "
-                       << stringList.front() << std::endl);
+                      << stringList.front() << std::endl);
         stringList.pop_front();
       } // while
 
@@ -651,8 +650,7 @@ namespace aprsinject {
     catch(const mysqlpp::BadQuery &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
       while(!stringList.empty()) {
-        TLOG(LogInfo, << "*** MySQL++ Error{Inject::raw}: "
-                       << stringList.front() << std::endl);
+        TLOG(LogInfo, << "*** MySQL++ Error{Inject::raw}: " << stringList.front() << std::endl);
         stringList.pop_front();
       } // while
 
@@ -664,8 +662,7 @@ namespace aprsinject {
     catch(const mysqlpp::Exception &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
       while(!stringList.empty()) {
-        TLOG(LogInfo, << "*** MySQL++ Error{Inject::raw}: "
-                       << stringList.front() << std::endl);
+        TLOG(LogInfo, << "*** MySQL++ Error{Inject::raw}: " << stringList.front() << std::endl);
         stringList.pop_front();
       } // while
 
