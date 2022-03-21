@@ -377,6 +377,7 @@ namespace aprsinject {
         if (shouldDrop) {
           _results.pop_front();
           result->release();
+
           ++num_handled;
 
           continue;
