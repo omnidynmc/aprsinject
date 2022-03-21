@@ -494,7 +494,9 @@ namespace aprsinject {
 //      return false;
 //    } // if
 //    aprs->replaceString("aprs.packet.id", packetId);
-    aprs->replaceString("aprs.packet.id", aprs->getString("aprs.packet.md5.id"));
+    std::string packetId = aprs->getString("aprs.packet.uuid.id");
+    openframe::StringTool::replace("-", "", packetId);
+    aprs->replaceString("aprs.packet.id", packetId);
 
     if (result->_aprs->isString("aprs.packet.object.name")) {
       std::string nameId;
