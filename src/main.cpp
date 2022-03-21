@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
   try {
     app = new aprsinject::App(prompt, (config) ? config : "etc/aprsinject.conf", console);
   } // try
-  catch(std::bad_alloc xa) {
+  catch(std::bad_alloc &xa) {
     assert(false);
   } // catch
 
