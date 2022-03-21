@@ -376,7 +376,7 @@ namespace aprsinject {
         bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred);
         if (!shouldDrop) {
           _results.pop_front();
-          result.release();
+          result->release();
           ++num_handled;
 
           continue;
