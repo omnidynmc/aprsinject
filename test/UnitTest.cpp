@@ -78,9 +78,11 @@ namespace aprsinject {
   void UnitTest::_length() {
     _test("maxlen:5", "this", "max length valid", true);
     _test("maxlen:t", "this", "max length bad field", false, true);
+    _test("maxlen:5", "thiss", "max length equal length valid", true);
     _test("minlen:5", "thisisme", "min length valid, success", true);
     _test("minlen:t", "this", "max length bad field", false, true);
     _test("minlen:5", "this", "min length invalid", false);
+    _test("minlen:5", "thiss", "min length equal length valid", true);
     _test("minlen:5|maxlen:10", "this", "min/max length invalid", false);
     _test("minlen:5|maxlen:10", "thisisfun", "min/max length valid", true);
     _test("minlen:5|maxlen:10", "thisisfunyeah", "min/max length invalid long", false);

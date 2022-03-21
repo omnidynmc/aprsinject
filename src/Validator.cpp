@@ -177,11 +177,11 @@ namespace aprsinject {
   } // Validator::is_max_val
 
   const bool Validator::is_min_len(const std::string &str, const std::string::size_type len) {
-    return str.length() > len;
+    return str.length() >= len;
   } // Validator::is_min_len
 
   const bool Validator::is_max_len(const std::string &str, const std::string::size_type len) {
-    return str.length() < len;
+    return str.length() <= len;
   } // Validator::is_max_len
 
   const bool Validator::is_character_range(const std::string &str, const int min, const int max) {
