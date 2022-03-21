@@ -37,6 +37,8 @@
 /test/validatortest
 /test/injecttest
 
+/etc/aprsinject.conf
+
 /logs/old
 /contrib
 
