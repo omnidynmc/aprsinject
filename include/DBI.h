@@ -81,6 +81,7 @@ namespace aprsinject {
       bool insertDigi(const std::string &, std::string &);
       bool insertMessage(const std::string &, const std::string &, std::string &);
       bool insertPath(const std::string &, const std::string &, std::string &);
+      bool insertPacket(const std::string &, const std::string &);
       bool insertPacket(const std::string &, std::string &);
       bool insertStatus(const std::string &, const std::string &, std::string &);
 
