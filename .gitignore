@@ -32,7 +32,7 @@
 *.app
 
 /src/aprsinject
-/aprsinect.pid
+/aprsinject.pid
 /aprsinject
 /test/validatortest
 /test/injecttest
