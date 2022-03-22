@@ -960,6 +960,35 @@ namespace aprsinject {
     return (numRows > 0) ? true : false;
   } // DBI::getDigiId
 
+  bool DBI::getPacketId(const std::string &packetId) {
+    int numRows = 0;
+
+    try {
+      mysqlpp::Query query = _sqlpp->query("SELECT packet_id FROM packet WHERE packet_id = UUID_TO BIN(%0:packet_id)");
+      query.parse();
+
+      mysqlpp::StoreQueryResult res = query.store(packetId);
+
+      //for(size_t i=0; i < res.num_rows();  i++)
+      //  id = res[i][0].c_str();
+
+      numRows = res.num_rows();
+    } // try
+    catch(const mysqlpp::BadQuery &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getPacketId}: #"
+                    << e.errnum()
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+    catch(const mysqlpp::Exception &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getPacketId}: "
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+
+    return (numRows > 0) ? true : false;
+  } // DBI::getPacketId
+
   bool DBI::getMessageId(const std::string &hash, std::string &id) {
     int numRows = 0;
 

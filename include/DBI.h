@@ -68,6 +68,7 @@ namespace aprsinject {
       bool getNameId(const std::string &, std::string &);
       bool getDestId(const std::string &, std::string &);
       bool getDigiId(const std::string &, std::string &);
+      bool getPacketId(const std::string &);
       bool getMessageId(const std::string &, std::string &);
       bool getPathId(const std::string &, std::string &);
       bool getStatusId(const std::string &, std::string &);

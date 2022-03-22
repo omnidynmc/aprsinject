@@ -470,9 +470,15 @@ namespace aprsinject {
     // take care of packet id
     ok = _store->setPacketId(packetId, callsignId);
     if (!ok) {
-      result->_status = Result::statusDeferred;
-      result->_error = "could not get packet id";
-      return false;
+      // check to see if we're resuming and packet id is already there
+      ok = _store->getPacketId(packetId);
+      if (ok == false) {
+        result->_status = Result::statusDeferred;
+        result->_error = "could not get packet id";
+
+        return false;
+      } // if
+
     } // if
 
     // take care of path id

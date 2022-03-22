@@ -954,6 +954,10 @@ namespace aprsinject {
     return isOK;
   } // Store::setPacketId
 
+  bool Store::getPacketId(const std::string &packetId) {
+    return _dbi->getPacketId(packetId);
+  } // Store::getPacketId
+
   // DEPRECATED
   bool Store::getPacketId(const std::string &callsignId, std::string &ret_id) {
     openframe::Stopwatch sw;
