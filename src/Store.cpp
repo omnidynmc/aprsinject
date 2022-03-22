@@ -926,6 +926,35 @@ namespace aprsinject {
     return false;
   } // Store::getDigiId
 
+  bool Store::setPacketId(const std::string &packetId, const std::string &callsignId) {
+    openframe::Stopwatch sw;
+    bool isOK = false;
+
+    sw.Start();
+
+    // try again just in case another thread beat us
+    for(int i=0; i < 3; i++) {
+      isOK = _dbi->insertPacket(packetId, callsignId);
+      if (isOK) {
+        _stats.sql_packet.inserted++;
+        _stompstats.sql_packet.inserted++;
+        break;
+      } // if
+
+      sleep(3);
+    } // for
+
+    if (!isOK) {
+      _stats.sql_packet.failed++;
+      _stompstats.sql_packet.failed++;
+    } // if
+
+    _profile->average("sql.insert.packet", sw.Time());
+
+    return isOK;
+  } // Store::setPacketId
+
+  // DEPRECATED
   bool Store::getPacketId(const std::string &callsignId, std::string &ret_id) {
     openframe::Stopwatch sw;
     bool isOK = false;

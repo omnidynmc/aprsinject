@@ -69,6 +69,7 @@ namespace aprsinject {
       bool getMessageId(const std::string &name, std::string &ret_id);
       bool getPathId(const std::string &hash, std::string &);
       bool getStatusId(const std::string &hash, std::string &);
+      bool setPacketId(const std::string &packetId, const std::string &callsignId);
       bool getPacketId(const std::string &callsignId, std::string &ret_id);
       bool getDuplicateFromMemcached(const std::string &hash, std::string &buf);
       bool setDuplicateInMemcached(const std::string &hash, const std::string &buf);

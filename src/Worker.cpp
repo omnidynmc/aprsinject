@@ -373,7 +373,7 @@ namespace aprsinject {
       } // if
       else {
         TLOG(LogWarn, << "Errors detected while handling result, try #" << retries+1 << std::endl);
-        bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred);
+        bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred) && retries == 3;
         if (shouldDrop) {
           _results.pop_front();
           result->release();
@@ -464,6 +464,17 @@ namespace aprsinject {
       } // else
     } // if
 
+    std::string packetId = aprs->getString("aprs.packet.uuid.id");
+    aprs->replaceString("aprs.packet.id", packetId);
+
+    // take care of packet id
+    ok = _store->setPacketId(packetId, callsignId);
+    if (!ok) {
+      result->_status = Result::statusDeferred;
+      result->_error = "could not get packet id";
+      return false;
+    } // if
+
     // take care of path id
     std::string pathId;
     ok = _store->getPathId(result->_aprs->path(), pathId);
@@ -484,19 +495,6 @@ namespace aprsinject {
       return false;
     } // if
     aprs->replaceString("aprs.packet.destination.id", destId);
-
-    // take care of packet id
-//    std::string packetId;
-//    ok = _store->getPacketId(callsignId, packetId);
-//    if (!ok) {
-//      result->_status = Result::statusDeferred;
-//      result->_error = "could not get packet id";
-//      return false;
-//    } // if
-//    aprs->replaceString("aprs.packet.id", packetId);
-    std::string packetId = aprs->getString("aprs.packet.uuid.id");
-    openframe::StringTool::replace("-", "", packetId);
-    aprs->replaceString("aprs.packet.id", packetId);
 
     if (result->_aprs->isString("aprs.packet.object.name")) {
       std::string nameId;
