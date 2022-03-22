@@ -1304,12 +1304,14 @@ namespace aprsinject {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPacket}: #"
                     << e.errnum()
                     << " " << e.what()
+                    << ": " << packetId
                     << std::endl);
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertPacket}: "
                     << " " << e.what()
+                    << ": " << packetId
                     << std::endl);
       return false;
     } // catch
