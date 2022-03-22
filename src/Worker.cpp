@@ -373,7 +373,7 @@ namespace aprsinject {
       } // if
       else {
         TLOG(LogWarn, << "Errors detected while handling result, try #" << retries+1 << std::endl);
-        bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred) && retries == 3;
+        bool shouldDrop = _drop_defer && result->is_status(Result::statusDeferred) && retries == 2;
         if (shouldDrop) {
           _results.pop_front();
           result->release();
