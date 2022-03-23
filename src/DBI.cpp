@@ -294,7 +294,7 @@ namespace aprsinject {
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.hour")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.midnight")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.weather.rain.24hour")
-              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.humidity")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int|maxval:100", aprs, "aprs.packet.weather.humidity")
               << "," << std::fixed << std::setprecision(2) << atof( aprs->getString("aprs.packet.weather.pressure").c_str() ) // FIXME: no need to divide
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.luminosity.wsm")
               << "," << aprs->timestamp()
