@@ -48,21 +48,22 @@ namespace aprsinject {
   } // Validator::is_valid
 
   const bool Validator::is_valid(const std::string str) {
+    bool is_valid = true;
+
     // --- IS <float|int> ===
     if (_vars.is(Validator::kIsName) == true) {
       std::string is = _vars.get(Validator::kIsName);
 
-      if (is == Validator::kIsFloatName) return is_float(str);
-      if (is == Validator::kIsIntName) return is_int(str);
+      if (is == Validator::kIsFloatName) is_valid = is_valid && is_float(str);
+      if (is == Validator::kIsIntName) is_valid = is_valid && is_int(str);
     } // if
 
-    bool is_valid = true;
     // --- MINLEN ===
     if (_vars.is(Validator::kMinLenName)) {
       std::string minLen = _vars.get(kMinLenName);
       if (is_int(minLen) == false) throw Validator_Exception("is_valid: minLen: min value not a number");
       std::string::size_type len = (std::string::size_type) atoi(minLen.c_str());
-      is_valid &= is_min_len(str, len);
+      is_valid = is_valid && is_min_len(str, len);
     } // if
 
     // --- MAXLEN ===
@@ -70,7 +71,7 @@ namespace aprsinject {
       std::string maxLen = _vars.get(kMaxLenName);
       if (is_int(maxLen) == false) throw Validator_Exception("is_valid: maxLen: max value not a number");
       std::string::size_type len = (std::string::size_type) atoi(maxLen.c_str());
-      is_valid &= is_max_len(str, len);
+      is_valid = is_valid && is_max_len(str, len);
     } // if
 
     // --- MINVAL ===
@@ -78,7 +79,7 @@ namespace aprsinject {
       std::string minVal = _vars.get(kMinValName);
       if (is_int(minVal) == false) throw Validator_Exception("is_valid: minVal: min value not a number");
       int val = atoi(minVal.c_str());
-      is_valid &= is_min_val(str, val);
+      is_valid = is_valid && is_min_val(str, val);
     } // if
 
     // --- MAXVAL ===
@@ -86,7 +87,7 @@ namespace aprsinject {
       std::string maxVal = _vars.get(kMaxValName);
       if (is_int(maxVal) == false) throw Validator_Exception("is_valid: maxVal: max value not a number");
       int val = atoi(maxVal.c_str());
-      is_valid &= is_max_val(str, val);
+      is_valid = is_valid && is_max_val(str, val);
     } // if
 
     // --- CHRNG ---
@@ -110,13 +111,13 @@ namespace aprsinject {
 
       int max = atoi(maxStr.c_str());
 
-      is_valid &= is_character_range(str, min, max);
+      is_valid = is_valid && is_character_range(str, min, max);
     } // if
 
     // --- CHPOOL ---
     if (_vars.is(Validator::kChpoolName)) {
       std::string chpool = _vars.get(kChpoolName);
-      is_valid &= str.find_first_not_of(chpool) == std::string::npos;
+      is_valid = is_valid && str.find_first_not_of(chpool) == std::string::npos;
     } // if
 
     return is_valid;

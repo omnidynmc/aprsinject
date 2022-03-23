@@ -123,6 +123,7 @@ namespace aprsinject {
     _test("maxval:10", "-9", "max value valid", true);
     _test("maxval:-9", "-10", "max value valid", true);
     _test("maxval:-9", "-8", "max value valid", false);
+    _test("is:int|maxval:100", "2147483647", "max value valid", false);
     _test("maxval:abs", "abcd", "max value bad vars string", false, true);
   } // UnitTest::_length
 
