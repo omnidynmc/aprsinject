@@ -110,7 +110,7 @@ namespace aprsinject {
       // query for last_position_meta
       //
 //      mysqlpp::Null<std::string> dir = mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.direction");
-      query << "INSERT INTO last_position_meta (packet_id, callsign_id, name_id, dest_id, path_id,"
+      query << "INSERT INTO last_position_meta (packet_id, callsign_id, name_id, dest_id, "
             <<                                 "course, speed, altitude, symbol_table,"
             <<                                 "symbol_code, overlay, `range`, type, weather, telemetry,"
             <<                                 "position_type_id, mbits, create_ts) VALUES "
@@ -118,7 +118,6 @@ namespace aprsinject {
             << "," << callsign_id
             << "," << name_id
             << "," << aprs->getString("aprs.packet.destination.id")
-            << "," << aprs->getString("aprs.packet.path.id")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
@@ -134,8 +133,8 @@ namespace aprsinject {
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
             << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), dest_id=VALUES(dest_id),"
-            << "path_id=VALUES(path_id), course=VALUES(course), speed=VALUES(speed), altitude=VALUES(altitude),"
-            << "status_id=VALUES(status_id), symbol_table=VALUES(symbol_table), symbol_code=VALUES(symbol_code), overlay=VALUES(overlay),"
+            << "course=VALUES(course), speed=VALUES(speed), altitude=VALUES(altitude),"
+            << "symbol_table=VALUES(symbol_table), symbol_code=VALUES(symbol_code), overlay=VALUES(overlay),"
             << "`range`=VALUES(`range`), type=VALUES(type), weather=VALUES(weather), telemetry=VALUES(telemetry), position_type_id=VALUES(position_type_id), mbits=VALUES(mbits),"
             << "create_ts=VALUES(create_ts)";
       query.execute();
@@ -255,11 +254,10 @@ namespace aprsinject {
         //
         // query for position_meta
         //
-        query << "INSERT INTO position_meta (packet_id, path_id, "
+        query << "INSERT INTO position_meta (packet_id, "
               <<                             "course, speed, altitude, symbol_table, symbol_code, time_of_fix,"
               <<                             "create_ts) VALUES "
               << "(" << mysqlpp::quote << packet_id
-              << "," << aprs->getString("aprs.packet.path.id")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
