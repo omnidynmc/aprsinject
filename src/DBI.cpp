@@ -374,7 +374,7 @@ namespace aprsinject {
       //
       // query for message_meta
       //
-      query << "INSERT INTO message (packet_id, callsign_id, callsign_to_id, body, msgid, create_ts) VALUES "
+      query << "INSERT INTO message (packet_id, callsign_id, callsign_to_id, `body`, msgid, create_ts) VALUES "
             << "(" << mysqlpp::quote << packet_id
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
@@ -388,15 +388,14 @@ namespace aprsinject {
       //
       // query for last_message
       //
-      query << "INSERT INTO last_message (packet_id, callsign_id, callsign_to_id, message_id, id, create_ts) VALUES "
+      query << "INSERT INTO last_message (packet_id, callsign_id, callsign_to_id, create_ts) VALUES "
             << "(" << mysqlpp::quote << packet_id
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.message.target.id")
-            << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ") ON DUPLICATE KEY UPDATE "
             << "packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), callsign_to_id=VALUES(callsign_to_id),"
-            << "message_id=VALUES(message_id), id=VALUES(id), create_ts=VALUES(create_ts)";
+            << "create_ts=VALUES(create_ts)";
       query.execute();
       query = _sqlpp->query();
 
