@@ -69,7 +69,6 @@ namespace aprsinject {
       bool getDestId(const std::string &, std::string &);
       bool getDigiId(const std::string &, std::string &);
       bool getPacketId(const std::string &);
-      bool getMessageId(const std::string &, std::string &);
       bool getPathId(const std::string &, std::string &);
       bool getStatusId(const std::string &, std::string &);
       bool getIconBySymbol(const std::string &symbol_table,
@@ -80,11 +79,10 @@ namespace aprsinject {
       bool insertName(const std::string &, std::string &);
       bool insertDest(const std::string &, std::string &);
       bool insertDigi(const std::string &, std::string &);
-      bool insertMessage(const std::string &, const std::string &, std::string &);
-      bool insertPath(const std::string &, const std::string &, std::string &);
+      bool insertPath(const std::string &, const std::string &);
       bool insertPacket(const std::string &, const std::string &);
       bool insertPacket(const std::string &, std::string &);
-      bool insertStatus(const std::string &, const std::string &, std::string &);
+      bool insertStatus(const std::string &, const std::string &);
 
     protected:
     private:

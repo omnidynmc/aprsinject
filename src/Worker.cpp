@@ -464,22 +464,18 @@ namespace aprsinject {
       } // else
     } // if
 
-    std::string packetId = aprs->getString("aprs.packet.uuid.id");
-    aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of packet id
-    ok = _store->setPacketId(packetId, callsignId);
+    std::string packetId;
+    ok = _store->setPacketId(callsignId, packetId);
     if (!ok) {
-      // check to see if we're resuming and packet id is already there
-      ok = _store->getPacketId(packetId);
-      if (ok == false) {
-        result->_status = Result::statusDeferred;
-        result->_error = "could not get packet id";
+      result->_status = Result::statusDeferred;
+      result->_error = "could not get packet id";
 
-        return false;
-      } // if
-
+      return false;
     } // if
+
+    aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of path id
     std::string pathId;
@@ -515,8 +511,7 @@ namespace aprsinject {
 
     // if we're a position or status report we'll have some additional text as a comment
     if (result->_aprs->packetType() == aprs::APRS::APRS_PACKET_POSITION) {
-      std::string statusId;
-      ok = _store->getStatusId(result->_aprs->status(), statusId);
+      ok = _store->setStatusId(result->_aprs->status(), statusId);
       if (!ok) {
         result->_status = Result::statusDeferred;
         result->_error = "could not get status id";

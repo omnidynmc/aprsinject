@@ -66,9 +66,6 @@ namespace aprsinject {
       bool getIconBySymbol(const std::string &symbol_table, const std::string &symbol_code, const int course, Icon &icon);
       bool getDestId(const std::string &dest, std::string &ret_id);
       bool getDigiId(const std::string &name, std::string &ret_id);
-      bool getMessageId(const std::string &name, std::string &ret_id);
-      bool getPathId(const std::string &hash, std::string &);
-      bool getStatusId(const std::string &hash, std::string &);
       bool setPacketId(const std::string &packetId, const std::string &callsignId);
       bool getPacketId(const std::string &callsignId, std::string &ret_id);
       bool getPacketId(const std::string &packetId);
@@ -81,6 +78,7 @@ namespace aprsinject {
       bool setLastpositionsInMemcached(aprs::APRS *aprs);
       bool getPositionsFromMemcached(const std::string &source, std::string &ret);
       bool setPositionsInMemcached(aprs::APRS *aprs);
+      bool setStatus(const std::string &packetId, const std::string &body);
 
       // FIXME
       std::string getDirectionByCourse(const int course);
@@ -110,8 +108,6 @@ namespace aprsinject {
       bool setMessageIdInMemcached(const std::string &name, const std::string &id);
       bool getPathIdFromMemcached(const std::string &hash, std::string &ret_id);
       bool setPathIdInMemcached(const std::string &hash, const std::string &id);
-      bool getStatusIdFromMemcached(const std::string &hash, std::string &ret_id);
-      bool setStatusIdInMemcached(const std::string &hash, const std::string &id);
 
     private:
       DBI *_dbi;			// new Injection handler
