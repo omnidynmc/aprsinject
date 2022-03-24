@@ -926,38 +926,6 @@ namespace aprsinject {
     return false;
   } // Store::getDigiId
 
-  bool Store::setPacketId(const std::string &packetId, const std::string &callsignId) {
-    openframe::Stopwatch sw;
-    bool isOK = false;
-
-    sw.Start();
-
-    // try again just in case another thread beat us
-    for(int i=0; i < 3; i++) {
-      isOK = _dbi->insertPacket(packetId, callsignId);
-      if (isOK) {
-        _stats.sql_packet.inserted++;
-        _stompstats.sql_packet.inserted++;
-        break;
-      } // if
-
-      sleep(3);
-    } // for
-
-    if (!isOK) {
-      _stats.sql_packet.failed++;
-      _stompstats.sql_packet.failed++;
-    } // if
-
-    _profile->average("sql.insert.packet", sw.Time());
-
-    return isOK;
-  } // Store::setPacketId
-
-  bool Store::getPacketId(const std::string &packetId) {
-    return _dbi->getPacketId(packetId);
-  } // Store::getPacketId
-
   bool Store::getPacketId(const std::string &callsignId, std::string &ret_id) {
     openframe::Stopwatch sw;
     bool isOK = false;
@@ -1185,67 +1153,6 @@ namespace aprsinject {
     return isOK;
   } // setNameIdInMemcached
 
-  bool Store::getMessageIdFromMemcached(const std::string &hash, std::string &ret_id) {
-    MemcachedController::memcachedReturnEnum mcr;
-    openframe::Stopwatch sw;
-    std::string buf;
-
-    if (!isMemcachedOk()) return false;
-
-    _stats.cache_message.tries++;
-    _stompstats.cache_message.tries++;
-
-    sw.Start();
-
-    try {
-      mcr = _memcached->get("message", hash, buf);
-    } // try
-    catch(MemcachedController_Exception &e) {
-      TLOG(LogError, << e.message()
-                     << std::endl);
-      _last_cache_fail_at = time(NULL);
-    } // catch
-
-    _profile->average("memcached.message", sw.Time());
-
-    if (mcr != MemcachedController::MEMCACHED_CONTROLLER_SUCCESS) {
-      _stats.cache_message.misses++;
-      _stompstats.cache_message.misses++;
-      return false;
-    } // if
-
-    _stats.cache_message.hits++;
-    _stompstats.cache_message.hits++;
-
-    ret_id = buf;
-
-    return true;
-  } // getMessageIdFromMemcached
-
-  bool Store::setMessageIdInMemcached(const std::string &hash, const std::string &id) {
-    assert( hash.length() );
-    assert( id.length() );
-
-    bool isOK = true;
-
-    if (!isMemcachedOk()) return false;
-
-    try {
-      _memcached->put("message", hash, id);
-    } // try
-    catch(MemcachedController_Exception &e) {
-      TLOG(LogError, << e.message()
-                     << std::endl);
-      _last_cache_fail_at = time(NULL);
-      return false;
-    } // catch
-
-    _stats.cache_message.stored++;
-    _stompstats.cache_message.stored++;
-
-    return isOK;
-  } // setMessageIdInMemcached
-
   bool Store::getDestIdFromMemcached(const std::string &dest, std::string &ret_id) {
     MemcachedController::memcachedReturnEnum mcr;
     openframe::Stopwatch sw;
@@ -1372,40 +1279,16 @@ namespace aprsinject {
     return isOK;
   } // setDigiIdInMemcached
 
-  bool Store::getPathId(const std::string &path, std::string &ret_id) {
-    md5wrapper md5;
-    std::string hash = md5.getHashFromString(path);
-
-    if (getPathIdFromMemcached(hash, ret_id)) return true;
-
-    _stats.sql_path.tries++;
-    _stompstats.sql_path.tries++;
-    openframe::Stopwatch sw;
-    sw.Start();
-    bool ok = _dbi->getPathId(hash, ret_id);
-    CALC_PROFILE(_stompstats.prof_sql_path, sw.Time());
-    if (ok) {
-      _stats.sql_path.hits++;
-      _stompstats.sql_path.hits++;
-      setPathIdInMemcached(hash, ret_id);
-      return true;
-    } // if
-    _stats.sql_path.misses++;
-    _stompstats.sql_path.misses++;
+  bool Store::setPath(const std::string &packetId, const std::string &path) {
 
     // try again just in case another thread beat us
     for(int i=0; i < 3; i++) {
-      if (_dbi->insertPath(hash, path, ret_id)) {
+      if (_dbi->insertPath(packetId, path)) {
         _stats.sql_path.inserted++;
         _stompstats.sql_path.inserted++;
-        setPathIdInMemcached(hash, ret_id);
         return true;
       } // if
 
-      if (_dbi->getPathId(hash, ret_id)) {
-        setPathIdInMemcached(hash, ret_id);
-        return true;
-      } // if
       sleep(3);
     } // for
 
@@ -1413,72 +1296,7 @@ namespace aprsinject {
     _stompstats.sql_path.failed++;
 
     return false;
-  } // Store::getPathId
-
-  bool Store::getPathIdFromMemcached(const std::string &hash, std::string &ret_id) {
-    MemcachedController::memcachedReturnEnum mcr;
-    openframe::Stopwatch sw;
-    std::string buf;
-
-    if (!isMemcachedOk())
-      return false;
-
-    _stats.cache_path.tries++;
-    _stompstats.cache_path.tries++;
-
-    sw.Start();
-
-    try {
-      mcr = _memcached->get("path", hash, buf);
-    } // try
-    catch(MemcachedController_Exception &e) {
-      TLOG(LogError, << e.message()
-                     << std::endl);
-      _last_cache_fail_at = time(NULL);
-      return false;
-    } // catch
-
-    _profile->average("memcached.path", sw.Time());
-
-    if (mcr != MemcachedController::MEMCACHED_CONTROLLER_SUCCESS) {
-      _stats.cache_path.misses++;
-      _stompstats.cache_path.misses++;
-      return false;
-    } // if
-
-    _stats.cache_path.hits++;
-    _stompstats.cache_path.hits++;
-
-    ret_id = buf;
-
-    return true;
-  } // Store::getPathIdFromMemcached
-
-  bool Store::setPathIdInMemcached(const std::string &hash, const std::string &id) {
-    assert( hash.length() );
-    assert( id.length() );
-
-    bool isOK = true;
-
-    if (!isMemcachedOk()) return false;
-
-    try {
-      _memcached->put("path", hash, id);
-    } // try
-    catch(MemcachedController_Exception &e) {
-      TLOG(LogError, << e.message()
-                     << std::endl);
-      _last_cache_fail_at = time(NULL);
-      isOK = false;
-    } // catch
-
-    if (isOK) {
-      _stats.cache_path.stored++;
-      _stompstats.cache_path.stored++;
-    } // if
-
-    return isOK;
-  } // Store::setPathIdInMemcached
+  } // Store::setPath
 
   bool Store::setStatus(const std::string &packetId, const std::string &path) {
 

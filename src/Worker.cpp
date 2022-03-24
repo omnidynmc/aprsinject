@@ -464,10 +464,9 @@ namespace aprsinject {
       } // else
     } // if
 
-
     // take care of packet id
     std::string packetId;
-    ok = _store->setPacketId(callsignId, packetId);
+    ok = _store->getPacketId(callsignId, packetId);
     if (!ok) {
       result->_status = Result::statusDeferred;
       result->_error = "could not get packet id";
@@ -478,16 +477,14 @@ namespace aprsinject {
     aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of path id
-    std::string pathId;
-    ok = _store->getPathId(result->_aprs->path(), pathId);
+    ok = _store->setPath(packetId, result->_aprs->path());
     if (!ok) {
       result->_status = Result::statusDeferred;
       result->_error = "could not get path id";
       return false;
     } // if
-    aprs->replaceString("aprs.packet.path.id", pathId);
 
-    // take care of path id
+    // take care of dest id
     std::string destId;
     std::string dest = aprs->getString("aprs.packet.path0");
     ok = _store->getDestId(dest, destId);
@@ -511,13 +508,12 @@ namespace aprsinject {
 
     // if we're a position or status report we'll have some additional text as a comment
     if (result->_aprs->packetType() == aprs::APRS::APRS_PACKET_POSITION) {
-      ok = _store->setStatusId(result->_aprs->status(), statusId);
+      ok = _store->setStatus(packetId, result->_aprs->status());
       if (!ok) {
         result->_status = Result::statusDeferred;
-        result->_error = "could not get status id";
+        result->_error = "could not set status";
         return false;
       } // if
-      aprs->replaceString("aprs.packet.status.id", statusId);
     } // if
 
     // if we're a message we need to find the to callsign
@@ -531,16 +527,6 @@ namespace aprsinject {
         return false;
       } // if
       aprs->replaceString("aprs.packet.message.target.id", targetId);
-
-      std::string messageId;
-      std::string body = result->_aprs->getString("aprs.packet.message.text");
-      ok = _store->getMessageId(body, messageId);
-      if (!ok) {
-        result->_status = Result::statusDeferred;
-        result->_error = "could not get message id";
-        return false;
-      } // if
-      aprs->replaceString("aprs.packet.message.sql.id", messageId);
     } // if
 
     // work on digipath

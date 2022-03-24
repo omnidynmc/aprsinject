@@ -69,7 +69,7 @@ namespace aprsinject {
   void DBI::prepare_queries() {
     add_query("i_last_position",
       "INSERT INTO last_position (packet_id,    callsign_id,    name_id,    icon_id,     maidenhead, latitude, longitude, create_ts) VALUES \
-                                 (UUID_TO_BIN('%0:packet_id'), %1:callsign_id, %2:name_id, %3q:icon_id, %4q:maidenhead, %5:latitude, %6:longitude, %7:create_ts)     \
+                                 (%0:packet_id, %1:callsign_id, %2:name_id, %3q:icon_id, %4q:maidenhead, %5:latitude, %6:longitude, %7:create_ts)     \
        ON DUPLICATE KEY UPDATE \
        packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), icon_id=VALUES(icon_id),\
        maidenhead=VALUES(maidenhead), latitude=VALUES(latitude), longitude=VALUES(longitude), create_ts=VALUES(create_ts)"
@@ -382,7 +382,7 @@ namespace aprsinject {
             << "(" << mysqlpp::quote << packet_id
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
-            << "," << mysqlpp::quote << aprs->getString("aprs.packet.message")
+            << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.text")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.id")
             << "," << aprs->timestamp()
             << ")";
@@ -960,35 +960,6 @@ namespace aprsinject {
     return (numRows > 0) ? true : false;
   } // DBI::getDigiId
 
-  bool DBI::getPacketId(const std::string &packetId) {
-    int numRows = 0;
-
-    try {
-      mysqlpp::Query query = _sqlpp->query("SELECT packet_id FROM packet WHERE packet_id = UUID_TO BIN(%0:packet_id)");
-      query.parse();
-
-      mysqlpp::StoreQueryResult res = query.store(packetId);
-
-      //for(size_t i=0; i < res.num_rows();  i++)
-      //  id = res[i][0].c_str();
-
-      numRows = res.num_rows();
-    } // try
-    catch(const mysqlpp::BadQuery &e) {
-      TLOG(LogWarn, << "*** MySQL++ Error{getPacketId}: #"
-                    << e.errnum()
-                    << " " << e.what()
-                    << std::endl);
-    } // catch
-    catch(const mysqlpp::Exception &e) {
-      TLOG(LogWarn, << "*** MySQL++ Error{getPacketId}: "
-                    << " " << e.what()
-                    << std::endl);
-    } // catch
-
-    return (numRows > 0) ? true : false;
-  } // DBI::getPacketId
-
   bool DBI::insertName(const std::string &name, std::string &id) {
     mysqlpp::SimpleResult res;
     int numRows = 0;
@@ -1109,10 +1080,6 @@ namespace aprsinject {
   bool DBI::insertPath(const std::string &packet_id, const std::string &body) {
     mysqlpp::SimpleResult res;
     int numRows = 0;
-    std::stringstream s;
-
-    s.str("");
-    id = "";
 
     try {
       mysqlpp::Query query = _sqlpp->query();
@@ -1135,24 +1102,12 @@ namespace aprsinject {
       return false;
     } // catch
 
-    if (numRows) {
-      if (res.insert_id() == 0)
-        return false;
-      s << res.insert_id();
-      id = s.str();
-    } // if
-    else std::cout << "INSERT FAILED" << std::endl;
-
     return (numRows > 0) ? true : false;
   } // DBI::insertPath
 
   bool DBI::insertStatus(const std::string &packet_id, const std::string &body) {
     mysqlpp::SimpleResult res;
     int numRows = 0;
-    std::stringstream s;
-
-    s.str("");
-    id = "";
 
     try {
       mysqlpp::Query query = _sqlpp->query();
@@ -1174,13 +1129,6 @@ namespace aprsinject {
                     << std::endl);
       return false;
     } // catch
-
-    if (numRows) {
-      if (res.insert_id() == 0)
-        return false;
-      s << res.insert_id();
-      id = s.str();
-    } // if
 
     return (numRows > 0) ? true : false;
   } // DBI::insertStaus
