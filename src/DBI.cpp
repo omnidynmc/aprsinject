@@ -111,7 +111,7 @@ namespace aprsinject {
       //
 //      mysqlpp::Null<std::string> dir = mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.dirspd.direction");
       query << "INSERT INTO last_position_meta (packet_id, callsign_id, name_id, dest_id, path_id,"
-            <<                                 "course, speed, altitude, status_id, symbol_table,"
+            <<                                 "course, speed, altitude, symbol_table,"
             <<                                 "symbol_code, overlay, `range`, type, weather, telemetry,"
             <<                                 "position_type_id, mbits, create_ts) VALUES "
             << "(" << mysqlpp::quote << packet_id
@@ -122,7 +122,6 @@ namespace aprsinject {
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
-            << "," << aprs->getString("aprs.packet.status.id")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.table")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.code")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:1", aprs, "aprs.packet.symbol.overlay")
@@ -256,11 +255,10 @@ namespace aprsinject {
         //
         // query for position_meta
         //
-        query << "INSERT INTO position_meta (packet_id, status_id, path_id, "
+        query << "INSERT INTO position_meta (packet_id, path_id, "
               <<                             "course, speed, altitude, symbol_table, symbol_code, time_of_fix,"
               <<                             "create_ts) VALUES "
               << "(" << mysqlpp::quote << packet_id
-              << "," << aprs->getString("aprs.packet.status.id")
               << "," << aprs->getString("aprs.packet.path.id")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
