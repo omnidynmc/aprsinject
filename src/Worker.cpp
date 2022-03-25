@@ -514,6 +514,19 @@ namespace aprsinject {
         result->_error = "could not set status";
         return false;
       } // if
+
+      if (aprs->isString("aprs.packet.position.maidenhead")) {
+        // take care of digi id
+        std::string maidenheadId;
+        std::string locator = aprs->getString("aprs.packet.position.maidenhead");
+        ok = _store->getMaidenheadId(locator, maidenheadId);
+        if (!ok) {
+          result->_status = Result::statusDeferred;
+          result->_error = "could not get maidenhead id";
+          return false;
+        } // if
+        aprs->replaceString("aprs.packet.position.maidenhead.sql.id", maidenheadId);
+      } // if
     } // if
 
     // if we're a message we need to find the to callsign

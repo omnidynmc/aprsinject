@@ -68,6 +68,7 @@ namespace aprsinject {
       bool getNameId(const std::string &, std::string &);
       bool getDestId(const std::string &, std::string &);
       bool getDigiId(const std::string &, std::string &);
+      bool getMaidenheadId(const std::string &, std::string &);
       bool getPacketId(const std::string &);
       bool getPathId(const std::string &, std::string &);
       bool getStatusId(const std::string &, std::string &);
@@ -79,6 +80,7 @@ namespace aprsinject {
       bool insertName(const std::string &, std::string &);
       bool insertDest(const std::string &, std::string &);
       bool insertDigi(const std::string &, std::string &);
+      bool insertMaidenhead(const std::string &, std::string &);
       bool insertPath(const std::string &, const std::string &);
       bool insertPacket(const std::string &, const std::string &);
       bool insertPacket(const std::string &, std::string &);

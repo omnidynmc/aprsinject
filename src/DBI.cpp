@@ -241,9 +241,10 @@ namespace aprsinject {
         //
         // query for position
         //
-        query << "INSERT INTO position (packet_id, callsign_id, latitude, longitude, create_ts) VALUES "
+        query << "INSERT INTO position (packet_id, callsign_id, maindenhead_id, latitude, longitude, create_ts) VALUES "
               << "(" << mysqlpp::quote << packet_id
               << "," << callsign_id
+              << "," << aprs->getString("aprs.packet.position.maidenhead.sql.id")
               << "," << aprs->latitude()
               << "," << aprs->longitude()
               << "," << aprs->timestamp()
@@ -955,6 +956,35 @@ namespace aprsinject {
     return (numRows > 0) ? true : false;
   } // DBI::getDigiId
 
+  bool DBI::getMaidenheadId(const std::string &locator, std::string &id) {
+    int numRows = 0;
+
+    try {
+      mysqlpp::Query query = _sqlpp->query("SELECT id FROM maidenhead WHERE locator=%0q:locator LIMIT 1");
+      query.parse();
+
+      mysqlpp::StoreQueryResult res = query.store(locator);
+
+      for(size_t i=0; i < res.num_rows();  i++)
+        id = res[i][0].c_str();
+
+      numRows = res.num_rows();
+    } // try
+    catch(const mysqlpp::BadQuery &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getMaidenheadId}: #"
+                    << e.errnum()
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+    catch(const mysqlpp::Exception &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getMaidenheadId}: "
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+
+    return (numRows > 0) ? true : false;
+  } // DBI::getMaidenheadId
+
   bool DBI::insertName(const std::string &name, std::string &id) {
     mysqlpp::SimpleResult res;
     int numRows = 0;
@@ -1071,6 +1101,45 @@ namespace aprsinject {
 
     return (numRows > 0) ? true : false;
   } // DBI::insertDigi
+
+  bool DBI::insertMaidenhead(const std::string &locator, std::string &id) {
+    mysqlpp::SimpleResult res;
+    int numRows = 0;
+    std::stringstream s;
+
+    s.str("");
+    id = "";
+
+    try {
+      mysqlpp::Query query = _sqlpp->query();
+      query << "INSERT IGNORE INTO maidenhead (locator) VALUES ( %0q:locator )";
+      query.parse();
+      res = query.execute(locator);
+      numRows = res.rows();
+    } // try
+    catch(mysqlpp::BadQuery &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{insertMaidenhead}: #"
+                    << e.errnum()
+                    << " " << e.what()
+                    << std::endl);
+      return false;
+    } // catch
+    catch(mysqlpp::Exception &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{insertMaidenhead}: "
+                    << " " << e.what()
+                    << std::endl);
+      return false;
+    } // catch
+
+    if (numRows) {
+      if (res.insert_id() == 0)
+        return false;
+      s << res.insert_id();
+      id = s.str();
+    } // if
+
+    return (numRows > 0) ? true : false;
+  } // DBI::insertMaidenhead
 
   bool DBI::insertPath(const std::string &packet_id, const std::string &body) {
     mysqlpp::SimpleResult res;

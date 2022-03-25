@@ -926,6 +926,47 @@ namespace aprsinject {
     return false;
   } // Store::getDigiId
 
+  bool Store::getMaidenheadId(const std::string &locator, std::string &ret_id) {
+    int i;
+
+    // try and find in memcached
+    if (getMaidenheadIdFromMemcached(locator, ret_id)) return true;
+
+    // not in memcached find in sql
+    _stats.sql_maidenhead.tries++;
+    _stompstats.sql_maidenhead.tries++;
+    if (_dbi->getMaidenheadId(locator, ret_id)) {
+      setMaidenheadIdInMemcached(locator, ret_id);
+      _stats.sql_maidenhead.hits++;
+      _stompstats.sql_maidenhead.hits++;
+      return true;
+    } // if
+    _stats.sql_maidenhead.misses++;
+    _stompstats.sql_maidenhead.misses++;
+
+    // try again just in case another thread beat us
+    for(i=0; i < 3; i++) {
+      // not in sql try and create it
+      if (_dbi->insertMaidenhead(locator, ret_id)) {
+        setMaidenheadIdInMemcached(locator, ret_id);
+        _stats.sql_maidenhead.inserted++;
+        _stompstats.sql_maidenhead.inserted++;
+        return true;
+      } // if
+
+      if (_dbi->getMaidenheadId(locator, ret_id)) {
+        setMaidenheadIdInMemcached(locator, ret_id);
+        return true;
+      } // if
+      sleep(3);
+    } // for
+
+    _stats.sql_maidenhead.failed++;
+    _stompstats.sql_maidenhead.failed++;
+
+    return false;
+  } // Store::getMaidenheadId
+
   bool Store::getPacketId(const std::string &callsignId, std::string &ret_id) {
     openframe::Stopwatch sw;
     bool isOK = false;
@@ -1278,6 +1319,69 @@ namespace aprsinject {
 
     return isOK;
   } // setDigiIdInMemcached
+
+  bool Store::getMaidenheadIdFromMemcached(const std::string &locator, std::string &ret_id) {
+    MemcachedController::memcachedReturnEnum mcr;
+    openframe::Stopwatch sw;
+
+    if (!isMemcachedOk()) return false;
+
+    ++_stats.cache_maidenhead.tries;
+    ++_stompstats.cache_maidenhead.tries;
+
+    sw.Start();
+
+    std::string buf;
+
+    try {
+      mcr = _memcached->get("maidenhead", locator, buf);
+    } // try
+    catch(MemcachedController_Exception &e) {
+      TLOG(LogError, << e.message()
+                     << std::endl);
+      _last_cache_fail_at = time(NULL);
+    } // catch
+
+    _profile->average("memcached.maidenhead", sw.Time());
+
+    if (mcr != MemcachedController::MEMCACHED_CONTROLLER_SUCCESS) {
+      _stats.cache_maidenhead.misses++;
+      _stompstats.cache_maidenhead.misses++;
+      return false;
+    } // if
+
+    _stats.cache_maidenhead.hits++;
+    _stompstats.cache_maidenhead.hits++;
+
+    ret_id = buf;
+
+    return true;
+  } // getMaidenheadIdFromMemcached
+
+  bool Store::setMaidenheadIdInMemcached(const std::string &locator, const std::string &id) {
+    assert( locator.length() );
+    assert( id.length() );
+
+    bool isOK = true;
+
+    if (!isMemcachedOk()) return false;
+
+    std::string key = locator;
+    try {
+      _memcached->put("maidenhead", key, id);
+    } // try
+    catch(MemcachedController_Exception &e) {
+      TLOG(LogError, << e.message()
+                     << std::endl);
+      _last_cache_fail_at = time(NULL);
+      return false;
+    } // catch
+
+    _stats.cache_maidenhead.stored++;
+    _stompstats.cache_maidenhead.stored++;
+
+    return isOK;
+  } // setMaidenheadIdInMemcached
 
   bool Store::setPath(const std::string &packetId, const std::string &path) {
 

@@ -66,6 +66,7 @@ namespace aprsinject {
       bool getIconBySymbol(const std::string &symbol_table, const std::string &symbol_code, const int course, Icon &icon);
       bool getDestId(const std::string &dest, std::string &ret_id);
       bool getDigiId(const std::string &name, std::string &ret_id);
+      bool getMaidenheadId(const std::string &locator, std::string &ret_id);
       bool getPacketId(const std::string &callsignId, std::string &ret_id);
       bool getDuplicateFromMemcached(const std::string &hash, std::string &buf);
       bool setDuplicateInMemcached(const std::string &hash, const std::string &buf);
@@ -103,6 +104,9 @@ namespace aprsinject {
       bool setDestIdInMemcached(const std::string &dest, const std::string &id);
       bool getDigiIdFromMemcached(const std::string &name, std::string &ret_id);
       bool setDigiIdInMemcached(const std::string &name, const std::string &id);
+      bool getMaidenheadIdFromMemcached(const std::string &locator, std::string &ret_id);
+      bool setMaidenheadIdInMemcached(const std::string &locator, const std::string &id);
+
 
     private:
       DBI *_dbi;			// new Injection handler
@@ -144,6 +148,7 @@ namespace aprsinject {
         memcache_stats_t cache_dest;
         memcache_stats_t cache_digi;
         memcache_stats_t cache_icon;
+        memcache_stats_t cache_maidenhead;
         memcache_stats_t cache_message;
         memcache_stats_t cache_name;
         memcache_stats_t cache_packet;
@@ -158,6 +163,7 @@ namespace aprsinject {
         sql_stats_t sql_callsign;
         sql_stats_t sql_dest;
         sql_stats_t sql_digi;
+        sql_stats_t sql_maidenhead;
         sql_stats_t sql_icon;
         sql_stats_t sql_message;
         sql_stats_t sql_name;
