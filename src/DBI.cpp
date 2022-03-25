@@ -99,7 +99,6 @@ namespace aprsinject {
                                     callsign_id,
                                     name_id,
                                     icon_id,
-                                    aprs->getString("aprs.packet.position.maidenhead"),
                                     aprs->latitude(),
                                     aprs->longitude(),
                                     aprs->timestamp()
