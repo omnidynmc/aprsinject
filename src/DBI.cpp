@@ -241,7 +241,7 @@ namespace aprsinject {
         //
         // query for position
         //
-        query << "INSERT INTO position (packet_id, callsign_id, maindenhead_id, latitude, longitude, create_ts) VALUES "
+        query << "INSERT INTO position (packet_id, callsign_id, maidenhead_id, latitude, longitude, create_ts) VALUES "
               << "(" << mysqlpp::quote << packet_id
               << "," << callsign_id
               << "," << aprs->getString("aprs.packet.position.maidenhead.sql.id")
