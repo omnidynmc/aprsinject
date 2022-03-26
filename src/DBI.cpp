@@ -69,10 +69,10 @@ namespace aprsinject {
   void DBI::prepare_queries() {
     add_query("i_last_position",
       "INSERT INTO last_position (packet_id,    callsign_id,    name_id,    icon_id, latitude, longitude, create_ts) VALUES \
-                                 (%0:packet_id, %1:callsign_id, %2:name_id, %3q:icon_id, %4:latitude, %5:longitude, %6:create_ts)     \
+                                 (%0:packet_id, %1:callsign_id, %2:name_id, %3q:icon_id, %4:maidenhead_id, %5:latitude, %6:longitude, %7:create_ts)     \
        ON DUPLICATE KEY UPDATE \
        packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), icon_id=VALUES(icon_id),\
-       latitude=VALUES(latitude), longitude=VALUES(longitude), create_ts=VALUES(create_ts)"
+       maidenhead_id=VALUES(maidenhead_id), latitude=VALUES(latitude), longitude=VALUES(longitude), create_ts=VALUES(create_ts)"
     );
 
   } // DBI::prepare_queries
@@ -86,6 +86,7 @@ namespace aprsinject {
     std::string callsign_id = aprs->getString("aprs.packet.callsign.id");
     std::string name_id = aprs->isString("aprs.packet.object.name.id") ? aprs->getString("aprs.packet.object.name.id") : "0";
     std::string icon_id = aprs->getString("aprs.packet.icon.id");
+    std::string maidenhead_id = aprs->getString("aprs.packet.maidenhead.sql.id");
 
     bool ok = false;
     try {
@@ -99,6 +100,7 @@ namespace aprsinject {
                                     callsign_id,
                                     name_id,
                                     icon_id,
+                                    maidenhead_id,
                                     aprs->latitude(),
                                     aprs->longitude(),
                                     aprs->timestamp()
