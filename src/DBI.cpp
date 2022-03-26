@@ -86,7 +86,7 @@ namespace aprsinject {
     std::string callsign_id = aprs->getString("aprs.packet.callsign.id");
     std::string name_id = aprs->isString("aprs.packet.object.name.id") ? aprs->getString("aprs.packet.object.name.id") : "0";
     std::string icon_id = aprs->getString("aprs.packet.icon.id");
-    std::string maidenhead_id = aprs->getString("aprs.packet.maidenhead.sql.id");
+    std::string maidenhead_id = aprs->getString("aprs.packet.position.maidenhead.sql.id");
 
     bool ok = false;
     try {
