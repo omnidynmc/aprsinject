@@ -525,6 +525,10 @@ namespace aprsinject {
           result->_error = "could not get maidenhead id";
           return false;
         } // if
+              TLOG(LogWarn, << "*** Error{insertMaidenhead}: "
+                    << "Invalid locator: " << maidenheadId
+                    << std::endl);
+
         aprs->replaceString("aprs.packet.position.maidenhead.sql.id", maidenheadId);
       } // if
     } // if
