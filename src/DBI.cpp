@@ -105,6 +105,7 @@ namespace aprsinject {
                                     aprs->longitude(),
                                     aprs->timestamp()
                                    );
+
       query = _sqlpp->query();
 
       //
@@ -1169,10 +1170,6 @@ namespace aprsinject {
       s << res.insert_id();
       id = s.str();
     } // if
-
-      TLOG(LogWarn, << "*** Error{insertMaidenhead}: "
-                    << "Invalid locator: " << id
-                    << std::endl);
 
     return (numRows > 0) ? true : false;
   } // DBI::insertAndGetId
