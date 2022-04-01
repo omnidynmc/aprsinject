@@ -928,7 +928,7 @@ namespace aprsinject {
 
   bool Store::getMaidenheadId(const std::string &locator, std::string &ret_id) {
     int i;
-return false;
+
     // try and find in memcached
     if (getMaidenheadIdFromMemcached(locator, ret_id)) return true;
 
