@@ -68,7 +68,7 @@ namespace aprsinject {
 
   void DBI::prepare_queries() {
     add_query("i_last_position",
-      "INSERT INTO last_position (packet_id,    callsign_id,    name_id,    icon_id, maidenhead_id, latitude, longitude, create_ts) VALUES \
+      "INSERT INTO last_position (packet_id,    callsign_id,    name_id,    icon_id,     maidenhead_id,    latitude,    longitude,    create_ts) VALUES \
                                  (%0:packet_id, %1:callsign_id, %2:name_id, %3q:icon_id, %4:maidenhead_id, %5:latitude, %6:longitude, %7:create_ts)     \
        ON DUPLICATE KEY UPDATE \
        packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), icon_id=VALUES(icon_id),\
