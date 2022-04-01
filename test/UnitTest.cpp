@@ -79,6 +79,7 @@ namespace aprsinject {
     _test("maxlen:5", "this", "max length valid", true);
     _test("maxlen:t", "this", "max length bad field", false, true);
     _test("maxlen:5", "thiss", "max length equal length valid", true);
+    _test("maxlen:1", "\\", "max length is 1 valid", true);
     _test("minlen:5", "thisisme", "min length valid, success", true);
     _test("minlen:t", "this", "max length bad field", false, true);
     _test("minlen:5", "this", "min length invalid", false);

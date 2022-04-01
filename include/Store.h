@@ -107,6 +107,10 @@ namespace aprsinject {
       bool getMaidenheadIdFromMemcached(const std::string &locator, std::string &ret_id);
       bool setMaidenheadIdInMemcached(const std::string &locator, const std::string &id);
 
+      bool getIdFromMemcached(const std::string &area, const std::string &key, std::string &ret_id);
+      bool setIdInMemcached(const std::string &area, const std::string &key, const std::string &id);
+
+
 
     private:
       DBI *_dbi;			// new Injection handler

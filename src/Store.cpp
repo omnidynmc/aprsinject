@@ -1383,6 +1383,57 @@ namespace aprsinject {
     return isOK;
   } // setMaidenheadIdInMemcached
 
+
+  bool Store::getIdFromMemcached(const std::string &area, const std::string &key, std::string &ret_id) {
+    MemcachedController::memcachedReturnEnum mcr;
+    openframe::Stopwatch sw;
+
+    if (!isMemcachedOk()) return false;
+
+    sw.Start();
+
+    std::string buf;
+
+    try {
+      mcr = _memcached->get(area, key, buf);
+    } // try
+    catch(MemcachedController_Exception &e) {
+      TLOG(LogError, << e.message()
+                     << std::endl);
+      _last_cache_fail_at = time(NULL);
+    } // catch
+
+    if (mcr != MemcachedController::MEMCACHED_CONTROLLER_SUCCESS) {
+      return false;
+    } // if
+
+    ret_id = buf;
+
+    return true;
+  } // getIdFromMemcached
+
+  bool Store::setIdInMemcached(const std::string &area, const std::string &key, const std::string &id) {
+    assert( area.length() );
+    assert( key.length() );
+    assert( id.length() );
+
+    bool isOK = true;
+
+    if (!isMemcachedOk()) return false;
+
+    try {
+      _memcached->put(area, key, id);
+    } // try
+    catch(MemcachedController_Exception &e) {
+      TLOG(LogError, << e.message()
+                     << std::endl);
+      _last_cache_fail_at = time(NULL);
+      return false;
+    } // catch
+
+    return isOK;
+  } // setIdInMemcached
+
   bool Store::setPath(const std::string &packetId, const std::string &path) {
 
     // try again just in case another thread beat us

@@ -86,6 +86,8 @@ namespace aprsinject {
       bool insertPacket(const std::string &, std::string &);
       bool insertStatus(const std::string &, const std::string &);
 
+      bool insertAndGetId(const std::string &, mysqlpp::Query &, std::string &);
+
     protected:
     private:
   }; // class DBI

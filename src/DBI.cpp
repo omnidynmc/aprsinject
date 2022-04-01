@@ -1104,19 +1104,21 @@ namespace aprsinject {
   } // DBI::insertDigi
 
   bool DBI::insertMaidenhead(const std::string &locator, std::string &id) {
-    mysqlpp::SimpleResult res;
-    int numRows = 0;
-    std::stringstream s;
+    if (locator.length() != 6) {
+      TLOG(LogWarn, << "*** Error{insertMaidenhead}: "
+                    << "Invalid locator: " << locator
+                    << std::endl);
 
-    s.str("");
-    id = "";
+      return false;
+    } // if
 
     try {
       mysqlpp::Query query = _sqlpp->query();
-      query << "INSERT IGNORE INTO maidenhead (locator) VALUES ( %0q:locator )";
-      query.parse();
-      res = query.execute(locator);
-      numRows = res.rows();
+      query << "CALL setMaidenhead("
+            << mysqlpp::quote << locator
+            << ")";
+
+      return insertAndGetId("maidenhead", query, id);
     } // try
     catch(mysqlpp::BadQuery &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{insertMaidenhead}: #"
@@ -1132,6 +1134,35 @@ namespace aprsinject {
       return false;
     } // catch
 
+    return false;
+  } // DBI::insertMaidenhead
+
+  bool DBI::insertAndGetId(const std::string &name, mysqlpp::Query &query, std::string &id) {
+    mysqlpp::SimpleResult res;
+    int numRows = 0;
+    std::stringstream s;
+
+    s.str("");
+    id = "";
+
+    try {
+      res = query.execute();
+      numRows = res.rows();
+    } // try
+    catch(mysqlpp::BadQuery &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{insertAndGetId[" << name << "]}: #"
+                    << e.errnum()
+                    << " " << e.what()
+                    << std::endl);
+      return false;
+    } // catch
+    catch(mysqlpp::Exception &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{insertAndGetId[" << name << "]}: "
+                    << " " << e.what()
+                    << std::endl);
+      return false;
+    } // catch
+
     if (numRows) {
       if (res.insert_id() == 0)
         return false;
@@ -1140,7 +1171,8 @@ namespace aprsinject {
     } // if
 
     return (numRows > 0) ? true : false;
-  } // DBI::insertMaidenhead
+  } // DBI::insertAndGetId
+
 
   bool DBI::insertPath(const std::string &packet_id, const std::string &body) {
     mysqlpp::SimpleResult res;
