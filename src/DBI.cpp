@@ -96,7 +96,7 @@ namespace aprsinject {
       //
       // query for last_position
       //
-      mysqlpp::StoreQueryResult res = q("i_last_position")->execute(packet_id,
+      mysqlpp::SimpleResult res = q("i_last_position")->execute(packet_id,
                                     callsign_id,
                                     name_id,
                                     icon_id,
