@@ -106,7 +106,7 @@ namespace aprsinject {
                                     aprs->timestamp()
                                    );
       TLOG(LogWarn, << "*** MySQL++ Error{Inject::raw}: #"
-                    << res.num_rows()
+                    << res.rows()
                     << std::endl);
       query = _sqlpp->query();
 
