@@ -96,7 +96,7 @@ namespace aprsinject {
       //
       // query for last_position
       //
-      mysqlpp::SimpleResult res = q("i_last_position")->execute(packet_id,
+      q("i_last_position")->execute(packet_id,
                                     callsign_id,
                                     name_id,
                                     icon_id,
@@ -105,9 +105,7 @@ namespace aprsinject {
                                     aprs->longitude(),
                                     aprs->timestamp()
                                    );
-      TLOG(LogWarn, << "*** MySQL++ Error{Inject::raw}: #"
-                    << res.rows()
-                    << std::endl);
+
       query = _sqlpp->query();
 
       //
