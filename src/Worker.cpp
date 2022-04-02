@@ -512,6 +512,7 @@ namespace aprsinject {
       if (!ok) {
         result->_status = Result::statusDeferred;
         result->_error = "could not set status";
+        assert(false);
         return false;
       } // if
 
@@ -523,6 +524,7 @@ namespace aprsinject {
         if (!ok) {
           result->_status = Result::statusDeferred;
           result->_error = "could not get maidenhead id";
+          assert(false);
           return false;
         } // if
 
