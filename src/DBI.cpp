@@ -106,6 +106,8 @@ namespace aprsinject {
                                     aprs->timestamp()
                                    );
 
+      assert(q("i_last_position")->affected_rows() > 0);
+
       query = _sqlpp->query();
 
       //
