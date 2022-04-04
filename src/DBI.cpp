@@ -106,7 +106,7 @@ namespace aprsinject {
                                     aprs->timestamp()
                                    );
 
-      if (q("i_last_position")->affected_rows() == 0)
+      if (q("i_last_position")->affected_rows() == 0 || aprs->timestamp() > time(NULL) - 3600)
         TLOG(LogDebug, << "*** MySQL++ Error{Inject::position}: " <<
                                   q("i_last_position")->str(packet_id,
                                       callsign_id,
