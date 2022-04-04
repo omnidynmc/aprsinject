@@ -105,18 +105,21 @@ namespace aprsinject {
                                     aprs->longitude(),
                                     aprs->timestamp()
                                    );
-if (q("i_last_position")->affected_rows() == 0)
-      TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: " <<
-                                q("i_last_position")->str(packet_id,
-                                    callsign_id,
-                                    name_id,
-                                    icon_id,
-                                    maidenhead_id,
-                                    aprs->latitude(),
-                                    aprs->longitude(),
-                                    aprs->timestamp()
-                                   )                    << std::endl);
 
+      if (q("i_last_position")->affected_rows() == 0)
+        TLOG(LogDebug, << "*** MySQL++ Error{Inject::position}: " <<
+                                  q("i_last_position")->str(packet_id,
+                                      callsign_id,
+                                      name_id,
+                                      icon_id,
+                                      maidenhead_id,
+                                      aprs->latitude(),
+                                      aprs->longitude(),
+                                      aprs->timestamp()
+                                    )
+                        << std::endl);
+
+      assert(aprs->timestamp() > time(NULL) - 3600)
       assert(q("i_last_position")->affected_rows() > 0);
 
       query = _sqlpp->query();
