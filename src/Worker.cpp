@@ -216,7 +216,7 @@ namespace aprsinject {
 
   void Worker::try_stompstats() {
     if (_stompstats.last_report_at > time(NULL) - _stompstats.report_interval) return;
-    datapoint_float("aprs_stats.rate.age", _stompstats.aprs_stats.age);
+    datapoint_float("aprs_stats.rate.age", (_stompstats.aprs_stats.age / _stompstats.aprs_stats.packet));
 
     datapoint("aprs_stats.rate.packet", _stompstats.aprs_stats.packet);
     datapoint("aprs_stats.rate.position", _stompstats.aprs_stats.position);
@@ -315,8 +315,8 @@ namespace aprsinject {
       if (!spp.sfind(' ', aprs_created_str)) continue; // skip this line
       time_t aprs_created = atoi( aprs_created_str.c_str() );
 
-      _stats.age = abs(time(NULL) - aprs_created);
-      _stompstats.aprs_stats.age = abs(time(NULL) - aprs_created);
+      _stats.age += abs(time(NULL) - aprs_created);
+      _stompstats.aprs_stats.age += abs(time(NULL) - aprs_created);
 
       Result *result = create_result(spp.str(), aprs_created);
 
