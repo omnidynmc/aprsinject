@@ -109,6 +109,7 @@ namespace aprsinject {
     stats.connects = 0;
     stats.disconnects = 0;
     stats.packets = 0;
+    stats.age = 0;
     stats.frames_in = 0;
     stats.frames_out = 0;
 
@@ -215,7 +216,7 @@ namespace aprsinject {
 
   void Worker::try_stompstats() {
     if (_stompstats.last_report_at > time(NULL) - _stompstats.report_interval) return;
-    datapoint("aprs_stats.rate.age", _stompstats.aprs_stats.age);
+    datapoint_float("aprs_stats.rate.age", _stompstats.aprs_stats.age);
 
     datapoint("aprs_stats.rate.packet", _stompstats.aprs_stats.packet);
     datapoint("aprs_stats.rate.position", _stompstats.aprs_stats.position);
