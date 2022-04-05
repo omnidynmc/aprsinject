@@ -124,7 +124,11 @@ namespace aprsinject {
                                );
 
     worker->set_elogger( a->elogger(), a->elog_name() );
-    worker->replace_stats(a->stats(), "aprsinject.worker"+id);
+
+    std::stringstream s;
+    s << "aprsinject.worker" << id;
+
+    worker->replace_stats(a->stats(), s.str());
 
     worker->set_console( a->is_console() );
 
