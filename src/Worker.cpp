@@ -194,6 +194,7 @@ namespace aprsinject {
     double pps = double(_stats.packets) / diff;
     double fps_in = double(_stats.frames_in) / diff;
     double fps_out = double(_stats.frames_out) / diff;
+    time_t age = _stats.age / _stats.packets;
 
     TLOG(LogNotice, << "Stats packets " << _stats.packets
                     << ", pps " << pps << "/s"
@@ -201,6 +202,7 @@ namespace aprsinject {
                     << ", fps in " << fps_in << "/s"
                     << ", frames out " << _stats.frames_out
                     << ", fps out " << fps_out << "/s"
+                    << ", age " << age << "s"
                     << ", next in " << _stats.report_interval
                     << ", connect attempts " << _stats.connects
                     << "; " << _stomp->connected_to()
@@ -309,6 +311,8 @@ namespace aprsinject {
       std::string aprs_created_str;
       if (!spp.sfind(' ', aprs_created_str)) continue; // skip this line
       time_t aprs_created = atoi( aprs_created_str.c_str() );
+
+      _stats.age = abs(time(NULL) - aprs_created);
 
       Result *result = create_result(spp.str(), aprs_created);
 

@@ -199,6 +199,7 @@ namespace aprsinject {
         unsigned int packets;
         unsigned int frames_in;
         unsigned int frames_out;
+        time_t age;
         time_t report_interval;
         time_t last_report_at;
         time_t created_at;
