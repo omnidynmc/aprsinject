@@ -145,6 +145,7 @@ namespace aprsinject {
     describe_stat("time.write.event", "worker"+thread_id_str()+"/write event time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
 
     // APRS Packet Stats
+    describe_stat("aprs_stats.rate.age", "aprs stats/rate/age", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("aprs_stats.rate.packet", "aprs stats/rate/packet", openstats::graphTypeCounter);
     describe_stat("aprs_stats.rate.position", "aprs stats/rate/positions", openstats::graphTypeCounter);
     describe_stat("aprs_stats.rate.message", "aprs stats/rate/message", openstats::graphTypeCounter);
@@ -214,6 +215,7 @@ namespace aprsinject {
 
   void Worker::try_stompstats() {
     if (_stompstats.last_report_at > time(NULL) - _stompstats.report_interval) return;
+    datapoint("aprs_stats.rate.age", _stompstats.aprs_stats.age);
 
     datapoint("aprs_stats.rate.packet", _stompstats.aprs_stats.packet);
     datapoint("aprs_stats.rate.position", _stompstats.aprs_stats.position);
@@ -313,6 +315,7 @@ namespace aprsinject {
       time_t aprs_created = atoi( aprs_created_str.c_str() );
 
       _stats.age = abs(time(NULL) - aprs_created);
+      _stompstats.aprs_stats.age = abs(time(NULL) - aprs_created);
 
       Result *result = create_result(spp.str(), aprs_created);
 

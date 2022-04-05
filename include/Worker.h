@@ -187,6 +187,7 @@ namespace aprsinject {
         unsigned int experimental;
         unsigned int beacon;
         unsigned int unknown;
+        time_t age;
         unsigned int reject_invparse;
         unsigned int reject_duplicate;
         unsigned int reject_tosoon;
