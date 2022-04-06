@@ -560,6 +560,10 @@ namespace aprsinject {
                     << OPENSTATS_PERCENT(_stats.sql_status.hits, _stats.sql_status.tries)
                     << std::endl);
 
+    TLOG(LogNotice, << "Sql{packet} insert time "
+                    << _profile->average("sql.insert.packet")
+                    << std::endl);
+
     init_stats(_stats);
   } // Store::try_stats
 
