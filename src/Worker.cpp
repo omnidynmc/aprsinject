@@ -151,7 +151,6 @@ namespace aprsinject {
     describe_stat("time.run.handle", "worker"+thread_id_str()+"/run handle time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.aprs.parse", "worker"+thread_id_str()+"/aprs parse time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.sql.insert", "worker"+thread_id_str()+"/sql insert time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
-    describe_stat("time.parse.aprs", "worker"+thread_id_str()+"/parse aprs time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.write.event", "worker"+thread_id_str()+"/write event time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
 
     // APRS Packet Stats
@@ -356,7 +355,7 @@ namespace aprsinject {
     try {
       sw.Start();
       result->_aprs = new aprs::APRS(body, timestamp);
-      _profile->average("time.aprs.parse");
+      _profile->average("time.aprs.parse", sw.Time());
     } // try
     catch(aprs::APRS_Exception &e) {
       result->_aprs = NULL;
