@@ -111,6 +111,7 @@ namespace aprsinject {
     _profile->add("memcached.locatorseen", 300);
     _profile->add("memcached.positions", 300);
     _profile->add("sql.insert.path", 300);
+    _profile->add("sql.insert.packet", 300);
 
     return *this;
   } // Store::init
