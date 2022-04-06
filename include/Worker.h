@@ -162,6 +162,8 @@ namespace aprsinject {
       std::string _db_database;
       bool _drop_defer;
 
+      openframe::Stopwatch *_profile;
+
       Store *_store;
       stomp::Stomp *_stomp;
 

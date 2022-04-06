@@ -53,6 +53,7 @@ namespace aprsinject {
 
     _store = NULL;
     _stomp = NULL;
+    _profile = NULL;
     _connected = false;
     _console = false;
     _locators_intval = new openframe::Intval(5);
@@ -75,6 +76,7 @@ namespace aprsinject {
     delete _locators_intval;
     if (_store) delete _store;
     if (_stomp) delete _stomp;
+    if (_profile) delete _profile;
   } // Worker:~Worker
 
   void Worker::init() {
@@ -103,6 +105,11 @@ namespace aprsinject {
     catch(std::bad_alloc &xa) {
       assert(false);
     } // catch
+
+    _profile = new openframe::Stopwatch();
+    _profile->add("time.loop.handle", 300);
+    _profile->add("time.aprs.parse", 300);
+
   } // Worker::init
 
   void Worker::init_stats(obj_stats_t &stats, const bool startup) {
@@ -141,6 +148,8 @@ namespace aprsinject {
     describe_stat("num.sql.inserted", "worker"+thread_id_str()+"/sql inserted", openstats::graphTypeGauge, openstats::dataTypeInt, openstats::useTypeSum);
     describe_stat("num.sql.failed", "worker"+thread_id_str()+"/sql failed", openstats::graphTypeGauge, openstats::dataTypeInt, openstats::useTypeSum);
     describe_stat("time.run", "worker"+thread_id_str()+"/run loop time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
+    describe_stat("time.run.handle", "worker"+thread_id_str()+"/run handle time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
+    describe_stat("time.aprs.parse", "worker"+thread_id_str()+"/aprs parse time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.sql.insert", "worker"+thread_id_str()+"/sql insert time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.parse.aprs", "worker"+thread_id_str()+"/parse aprs time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.write.event", "worker"+thread_id_str()+"/write event time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
@@ -217,6 +226,9 @@ namespace aprsinject {
   void Worker::try_stompstats() {
     if (_stompstats.last_report_at > time(NULL) - _stompstats.report_interval) return;
     datapoint_float("aprs_stats.rate.age", (_stompstats.aprs_stats.age / _stompstats.aprs_stats.packet));
+
+    datapoint_float("time.run.handle", _profile->average("time.loop.handle"));
+    datapoint_float("time.aprs.parse", _profile->average("time.aprs.parse"));
 
     datapoint("aprs_stats.rate.packet", _stompstats.aprs_stats.packet);
     datapoint("aprs_stats.rate.position", _stompstats.aprs_stats.position);
@@ -340,8 +352,11 @@ namespace aprsinject {
       assert(false);
     } // catch
 
+    openframe::Stopwatch sw;
     try {
+      sw.Start();
       result->_aprs = new aprs::APRS(body, timestamp);
+      _profile->average("time.aprs.parse");
     } // try
     catch(aprs::APRS_Exception &e) {
       result->_aprs = NULL;
@@ -366,11 +381,15 @@ namespace aprsinject {
     /*****************************
      ** Handle Incoming Packets **
      *****************************/
+    openframe::Stopwatch sw;
     size_t num_handled = 0;
     int retries = 0;
     while(!_results.empty() && num_handled < 100 && retries < 3) {
       Result *result = _results.front();
+
+      sw.Start();
       bool ok = handle(result);
+      _profile->average("time.loop.handle", sw.Time());
 
       print_result(result);
 
