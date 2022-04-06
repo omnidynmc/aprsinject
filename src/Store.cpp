@@ -112,6 +112,11 @@ namespace aprsinject {
     _profile->add("memcached.positions", 300);
     _profile->add("sql.insert.path", 300);
     _profile->add("sql.insert.packet", 300);
+    _profile->add("sql.insert.position", 300);
+    _profile->add("sql.insert.message", 300);
+    _profile->add("sql.insert.raw", 300);
+
+    _profile->add("memcached.insert.position", 300);
 
     return *this;
   } // Store::init
@@ -156,6 +161,10 @@ namespace aprsinject {
   void Store::onDescribeStats() {
     
     describe_root_stat("store.time.sql.packet.insert", "store/time/store/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
+    describe_root_stat("store.time.sql.position.insert", "store/time/position/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
+    describe_root_stat("store.time.sql.message.insert", "store/time/message/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
+    describe_root_stat("store.time.sql.raw.insert", "store/time/raw/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
+    describe_root_stat("store.time.memcached.position.insert", "store/time/memcached/position/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
 
     describe_root_stat("store.num.cache.store.hits", "store/cache/store/num hits - store", openstats::graphTypeCounter, openstats::dataTypeInt);
     describe_root_stat("store.num.cache.store.misses", "store/cache/store/num misses - store", openstats::graphTypeCounter, openstats::dataTypeInt);
@@ -573,6 +582,12 @@ namespace aprsinject {
 
   void Store::try_stompstats() {
     if (_stompstats.last_report_at > time(NULL) - _stompstats.report_interval) return;
+
+    datapoint_float("store.time.sql.position.insert", _profile->average("sql.insert.position"));
+    datapoint_float("store.time.sql.message.insert", _profile->average("sql.insert.message"));
+    datapoint_float("store.time.sql.raw.insert", _profile->average("sql.insert.raw"));
+    datapoint_float("store.time.memcached.position.insert", _profile->average("memcached.insert.position"));
+
 
     // this prevents stompstats from having to lookup strings in
     // its hash tables over and over again in realtime at ~35 pps
@@ -998,7 +1013,6 @@ namespace aprsinject {
     } // if
 
     _profile->average("sql.insert.packet", sw.Time());
-    datapoint_float("store.time.sql.packet.insert", _profile->average("sql.insert.packet"));
 
     return isOK;
   } // Store::getPacketId
@@ -1858,14 +1872,29 @@ namespace aprsinject {
   } // setPositionsInMemcached
 
   bool Store::injectPosition(aprs::APRS *aprs) {
+    openframe::Stopwatch sw;
+
+    sw.Start();
     setLastpositionsInMemcached(aprs);
+    _profile->average("memcached.insert.position", sw.Time());
+    
     setPositionsInMemcached(aprs);
 
-    return _dbi->position(aprs);
+    sw.Start();
+    bool ok = _dbi->position(aprs);
+    _profile->average("sql.insert.position", sw.Time());
+
+    return ok;
   } // Store::injectPosition
 
   bool Store::injectMessage(aprs::APRS *aprs) {
-    return _dbi->message(aprs);
+    openframe::Stopwatch sw;
+
+    sw.Start();
+    bool ok = _dbi->message(aprs);
+    _profile->average("sql.insert.message", sw.Time());
+
+    return ok;
   } // Store::injectMessage
 
   bool Store::injectTelemtry(aprs::APRS *aprs) {
@@ -1873,7 +1902,13 @@ namespace aprsinject {
   } // Store::injectTelemtry
 
   bool Store::injectRaw(aprs::APRS *aprs) {
-    return _dbi->raw(aprs);
+    openframe::Stopwatch sw;
+
+    sw.Start();
+    bool ok = _dbi->raw(aprs);
+    _profile->average("sql.insert.raw", sw.Time());
+
+    return ok;
   } // Store::injectRaw
 
 } // namespace openaprs
