@@ -153,6 +153,9 @@ namespace aprsinject {
   } // init_stats
 
   void Store::onDescribeStats() {
+    
+    describe_root_stat("store.time.sql.packet.insert", "store/time/store/insert", openstats::graphTypeGauge, openstats::dataTypeFloat);
+
     describe_root_stat("store.num.cache.store.hits", "store/cache/store/num hits - store", openstats::graphTypeCounter, openstats::dataTypeInt);
     describe_root_stat("store.num.cache.store.misses", "store/cache/store/num misses - store", openstats::graphTypeCounter, openstats::dataTypeInt);
     describe_root_stat("store.num.cache.store.tries", "store/cache/store/num tries - store", openstats::graphTypeCounter, openstats::dataTypeInt);
@@ -572,7 +575,6 @@ namespace aprsinject {
 
     // this prevents stompstats from having to lookup strings in
     // its hash tables over and over again in realtime at ~35 pps
-
     datapoint("store.num.sql.callsign.tries", _stompstats.sql_callsign.tries);
     datapoint("store.num.sql.callsign.hits", _stompstats.sql_callsign.hits);
     datapoint_float("store.num.sql.callsign.hitrate", OPENSTATS_PERCENT(_stompstats.sql_callsign.hits, _stompstats.sql_callsign.tries) );
@@ -995,6 +997,7 @@ namespace aprsinject {
     } // if
 
     _profile->average("sql.insert.packet", sw.Time());
+    datapoint_float("store.time.sql.packet.insert", _profile->average("sql.insert.packet"));
 
     return isOK;
   } // Store::getPacketId
