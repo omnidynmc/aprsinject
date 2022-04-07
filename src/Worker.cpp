@@ -519,7 +519,7 @@ namespace aprsinject {
       return false;
     } // if
 
-    //aprs->replaceString("aprs.packet.id", packetId);
+    aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of path id
     ok = _store->setPath(packetId, result->_aprs->path());
