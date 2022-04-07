@@ -108,6 +108,9 @@ namespace aprsinject {
 
     _profile = new openframe::Stopwatch();
     _profile->add("time.loop.handle", 300);
+    _profile->add("time.loop.preprocess", 300);
+    _profile->add("time.loop.process", 300);
+    _profile->add("time.loop.inject", 300);
     _profile->add("time.aprs.parse", 300);
 
   } // Worker::init
@@ -149,6 +152,9 @@ namespace aprsinject {
     describe_stat("num.sql.failed", "worker"+thread_id_str()+"/sql failed", openstats::graphTypeGauge, openstats::dataTypeInt, openstats::useTypeSum);
     describe_stat("time.run", "worker"+thread_id_str()+"/run loop time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.run.handle", "worker"+thread_id_str()+"/run handle time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
+    describe_stat("time.run.preprocess", "worker"+thread_id_str()+"/run preprocess time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
+    describe_stat("time.run.process", "worker"+thread_id_str()+"/run process time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
+    describe_stat("time.run.inject", "worker"+thread_id_str()+"/run inject time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.aprs.parse", "worker"+thread_id_str()+"/aprs parse time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.sql.insert", "worker"+thread_id_str()+"/sql insert time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
     describe_stat("time.write.event", "worker"+thread_id_str()+"/write event time", openstats::graphTypeGauge, openstats::dataTypeFloat, openstats::useTypeMean);
@@ -227,6 +233,9 @@ namespace aprsinject {
     datapoint_float("aprs_stats.rate.age", (_stompstats.aprs_stats.age / _stompstats.aprs_stats.packet));
 
     datapoint_float("time.run.handle", _profile->average("time.loop.handle"));
+    datapoint_float("time.run.preprocess", _profile->average("time.loop.preprocess"));
+    datapoint_float("time.run.process", _profile->average("time.loop.process"));
+    datapoint_float("time.run.inject", _profile->average("time.loop.inject"));
     datapoint_float("time.aprs.parse", _profile->average("time.aprs.parse"));
 
     datapoint("aprs_stats.rate.packet", _stompstats.aprs_stats.packet);
@@ -438,7 +447,12 @@ namespace aprsinject {
 
     // at this point we're past rejecting let's get all of our
     // needed ids in order to proceed
+    openframe::Stopwatch sw;
+
+    sw.Start();
     ok = preprocess(result);
+    _profile->average("time.run.preprocess", sw.Time());
+
     if (!ok) {
       TLOG(LogWarn, << "Errors detected while preprocessing result; "
                     << result->_error << std::endl);
@@ -446,12 +460,17 @@ namespace aprsinject {
     } // if
 
     // try and inject record
+    sw.Start();
     ok = inject(result);
+    _profile->average("time.run.inject", sw.Time());
+
     if (!ok) return false;
 
     // we don't care if this succeeded we're good to go
     // ... for now
+    sw.Start();
     process(result);
+    _profile->average("time.run.preprocess", sw.Time());
 
     return true;
   } // Worker::handle
