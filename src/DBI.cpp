@@ -69,7 +69,7 @@ namespace aprsinject {
   void DBI::prepare_queries() {
     add_query("i_last_position",
       "INSERT INTO last_position (packet_id,    callsign_id,    name_id,    icon_id,     maidenhead_id,    latitude,    longitude,    create_ts) VALUES \
-                                 (%0:packet_id, %1:callsign_id, %2:name_id, %3q:icon_id, %4:maidenhead_id, %5:latitude, %6:longitude, %7:create_ts)     \
+                                 (UUID_STRIP(%0:packet_id), %1:callsign_id, %2:name_id, %3q:icon_id, %4:maidenhead_id, %5:latitude, %6:longitude, %7:create_ts)     \
        ON DUPLICATE KEY UPDATE \
        packet_id=VALUES(packet_id), callsign_id=VALUES(callsign_id), name_id=VALUES(name_id), icon_id=VALUES(icon_id),\
        maidenhead_id=VALUES(maidenhead_id), latitude=VALUES(latitude), longitude=VALUES(longitude), create_ts=VALUES(create_ts)"
@@ -106,19 +106,6 @@ namespace aprsinject {
                                     aprs->timestamp()
                                    );
 
-      if (q("i_last_position")->affected_rows() == 0 || aprs->timestamp() < time(NULL) - 3600)
-        TLOG(LogDebug, << "*** MySQL++ Error{Inject::position}: " <<
-                                  q("i_last_position")->str(packet_id,
-                                      callsign_id,
-                                      name_id,
-                                      icon_id,
-                                      maidenhead_id,
-                                      aprs->latitude(),
-                                      aprs->longitude(),
-                                      aprs->timestamp()
-                                    )
-                        << std::endl);
-
       query = _sqlpp->query();
 
       //
@@ -129,7 +116,7 @@ namespace aprsinject {
             <<                                 "course, speed, altitude, symbol_table,"
             <<                                 "symbol_code, overlay, `range`, type, weather, telemetry,"
             <<                                 "position_type_id, mbits, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << name_id
             << "," << aprs->getString("aprs.packet.destination.id")
@@ -161,7 +148,7 @@ namespace aprsinject {
       if (aprs->isString("aprs.packet.phg.power")) {
         query << "INSERT INTO last_phg (packet_id, callsign_id, name_id, power, haat, gain, `range`,"
               <<                       "direction, beacon, create_ts) VALUES"
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << name_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.power")
@@ -185,7 +172,7 @@ namespace aprsinject {
       if (aprs->isString("aprs.packet.dfr.bearing")) {
         query << "INSERT INTO last_dfr (packet_id, callsign_id, name_id, bearing, hits, `range`,"
               <<                       "quality, create_ts) VALUES"
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << name_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dfr.bearing")
@@ -207,7 +194,7 @@ namespace aprsinject {
       if (aprs->isString("aprs.packet.dfs.power")) {
         query << "INSERT INTO last_dfs (packet_id, callsign_id, name_id, power, haat, gain, `range`,"
               <<                       "direction, create_ts) VALUES"
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << name_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.phg.power")
@@ -230,7 +217,7 @@ namespace aprsinject {
       if (aprs->isString("aprs.packet.afrs.frequency")) {
         query << "INSERT INTO last_frequency (packet_id, callsign_id, name_id, frequency, `range`,"
               <<                             "range_east, tone, afrs_type, receive, alternate, type, create_ts) VALUES"
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << name_id
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.afrs.frequency")
@@ -257,7 +244,7 @@ namespace aprsinject {
         // query for position
         //
         query << "INSERT INTO position (packet_id, callsign_id, maidenhead_id, latitude, longitude, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << aprs->getString("aprs.packet.position.maidenhead.sql.id")
               << "," << aprs->latitude()
@@ -273,7 +260,7 @@ namespace aprsinject {
         query << "INSERT INTO position_meta (packet_id, "
               <<                             "course, speed, altitude, symbol_table, symbol_code, time_of_fix,"
               <<                             "create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
@@ -295,7 +282,7 @@ namespace aprsinject {
               <<                           "wind_direction, wind_speed, wind_gust, temperature, rain_hour,"
               <<                           "rain_calendar_day, rain_24hour_day, humidity, barometer,"
               <<                           "luminosity, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << aprs->latitude()
               << "," << aprs->longitude()
@@ -323,7 +310,7 @@ namespace aprsinject {
         query << "INSERT INTO weather (packet_id, callsign_id, wind_direction, wind_speed, wind_gust,"
               <<                      "temperature, rain_hour, rain_calendar_day, rain_24hour_day, humidity, barometer,"
               <<                      "luminosity, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.weather.wind.speed")
@@ -391,7 +378,7 @@ namespace aprsinject {
       // query for message_meta
       //
       query << "INSERT INTO message (packet_id, callsign_id, callsign_to_id, `body`, msgid, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.target.id")
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.message.text")
@@ -405,7 +392,7 @@ namespace aprsinject {
       // query for last_message
       //
       query << "INSERT INTO last_message (packet_id, callsign_id, callsign_to_id, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.message.target.id")
             << "," << aprs->timestamp()
@@ -424,7 +411,7 @@ namespace aprsinject {
                                       aprs->getString("aprs.packet.message.target"),
                                       regexList)) {
         query << "INSERT INTO last_bulletin (packet_id, callsign_id, addressee, text, id, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.target")
             << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.message.text")
@@ -439,7 +426,7 @@ namespace aprsinject {
       if (aprs->getString("aprs.packet.telemetry.message.type") == "EQNS") {
         query << "INSERT INTO telemetry_eqns (packet_id, callsign_id, a_0, b_0, c_0, a_1, b_1, c_1, a_2,"
               <<                             "b_2, c_2, a_3, b_3, c_3, a_4, b_4, c_4, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a0.a")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.a0.b")
@@ -469,7 +456,7 @@ namespace aprsinject {
     else if (aprs->getString("aprs.packet.telemetry.message.type") == "UNIT") {
         query << "INSERT INTO telemetry_unit (packet_id, callsign_id, a_0, a_1, a_2, a_3, a_4, d_0, d_1,"
               <<                             "d_2, d_3, d_4, d_5, d_6, d_7, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:7", aprs, "aprs.packet.telemetry.analog0")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:6", aprs, "aprs.packet.telemetry.analog1")
@@ -496,7 +483,7 @@ namespace aprsinject {
       else if (aprs->getString("aprs.packet.telemetry.message.type") == "PARM") {
         query << "INSERT INTO telemetry_parm (packet_id, callsign_id, a_0, a_1, a_2, a_3, a_4, d_0, d_1,"
               <<                              "d_2, d_3, d_4, d_5, d_6, d_7, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog0")
               << "," << mysqlpp::quote << NULL_OPTIONPP(aprs, "aprs.packet.telemetry.analog1")
@@ -522,7 +509,7 @@ namespace aprsinject {
       } // else if
       else if (aprs->getString("aprs.packet.telemetry.message.type") == "BITS") {
         query << "INSERT INTO telemetry_bits (packet_id, callsign_id, bitsense, project_title, create_ts) VALUES "
-              << "(" << mysqlpp::quote << packet_id
+              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
               << "," << aprs->getString("aprs.packet.telemetry.bitsense")
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.telemetry.project")
@@ -583,7 +570,7 @@ namespace aprsinject {
       //
       query << "INSERT INTO last_raw (packet_id, callsign_id, "
             <<                       "information, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.raw")
             << ", UNIX_TIMESTAMP()"
@@ -600,7 +587,7 @@ namespace aprsinject {
       query << "INSERT INTO last_raw_meta (packet_id, callsign_id, dest_id, digi0_id, digi1_id,"
             <<                       "digi2_id, digi3_id, digi4_id, digi5_id, digi6_id,"
             <<                       "digi7_id, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.destination.id")
             << "," << aprs->getString("aprs.packet.path1.id")
@@ -625,7 +612,7 @@ namespace aprsinject {
       // query for raw
       //
       query << "INSERT INTO raw (packet_id, callsign_id, information, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << aprs->getString("aprs.packet.raw")
             << "," << aprs->timestamp()
@@ -639,7 +626,7 @@ namespace aprsinject {
       query << "INSERT INTO raw_meta (packet_id, callsign_id, dest_id,"
             <<                       "digi0_id, digi1_id, digi2_id, digi3_id, digi4_id,"
             <<                       "digi5_id, digi6_id, digi7_id, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << aprs->getString("aprs.packet.destination.id")
             << "," << aprs->getString("aprs.packet.path1.id")
@@ -703,7 +690,7 @@ namespace aprsinject {
       //
       query << "INSERT INTO last_telemetry (packet_id, callsign_id, sequence, analog_0,"
             <<                             "analog_1, analog_2, analog_3, analog_4, digital, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog0")
@@ -726,7 +713,7 @@ namespace aprsinject {
       //
       query << "INSERT INTO telemetry (packet_id, callsign_id, sequence, analog_0, analog_1,"
             <<                        "analog_2, analog_3, analog_4, digital, create_ts) VALUES "
-            << "(" << mysqlpp::quote << packet_id
+            << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << callsign_id
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.telemetry.sequence")
             << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:float", aprs, "aprs.packet.telemetry.analog0")
@@ -1194,7 +1181,7 @@ namespace aprsinject {
 
     try {
       mysqlpp::Query query = _sqlpp->query();
-      query << "INSERT IGNORE INTO path (packet_id, body) VALUES (%0q:packet_id, %1q:body)";
+      query << "INSERT IGNORE INTO path (packet_id, body) VALUES (UUID_STRIP(%0q:packet_id), %1q:body)";
       query.parse();
       res = query.execute(packet_id, body);
       numRows = res.rows();
@@ -1222,7 +1209,7 @@ namespace aprsinject {
 
     try {
       mysqlpp::Query query = _sqlpp->query();
-      query << "INSERT IGNORE INTO statuses (packet_id, body) VALUES (%0q:packet_id, %1q:body)";
+      query << "INSERT IGNORE INTO statuses (packet_id, body) VALUES (UUID_STRIP(%0q:packet_id), %1q:body)";
       query.parse();
       res = query.execute(packet_id, body);
       numRows = res.rows();
@@ -1252,7 +1239,7 @@ namespace aprsinject {
     try {
       mysqlpp::Query query = _sqlpp->query();
       query << "INSERT INTO packet (id, callsign_id, create_ts) VALUES ("
-            << "UUID_TO_BIN(" << mysqlpp::quote << packetId << "),"
+            << "UUID_STRIP(" << mysqlpp::quote << packetId << "),"
             << mysqlpp::quote << callsignId
             << ", UNIX_TIMESTAMP() )",
       res = query.execute();

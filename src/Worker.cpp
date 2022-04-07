@@ -510,8 +510,8 @@ namespace aprsinject {
     } // if
 
     // take care of packet id
-    std::string packetId;
-    ok = _store->getPacketId(callsignId, packetId);
+    std::string packetId = aprs->getString("aprs.packet.uuid");
+    ok = _store->setPacketId(callsignId, packetId);
     if (!ok) {
       result->_status = Result::statusDeferred;
       result->_error = "could not get packet id";
@@ -519,7 +519,7 @@ namespace aprsinject {
       return false;
     } // if
 
-    aprs->replaceString("aprs.packet.id", packetId);
+    //aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of path id
     ok = _store->setPath(packetId, result->_aprs->path());
