@@ -510,7 +510,7 @@ namespace aprsinject {
     } // if
 
     // take care of packet id
-    std::string packetId = aprs->getString("aprs.packet.uuid");
+    std::string packetId = aprs->getString("aprs.packet.uuid.id");
     ok = _store->setPacketId(callsignId, packetId);
     if (!ok) {
       result->_status = Result::statusDeferred;
