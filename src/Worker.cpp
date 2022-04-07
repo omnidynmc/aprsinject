@@ -451,7 +451,7 @@ namespace aprsinject {
 
     sw.Start();
     ok = preprocess(result);
-    _profile->average("time.run.preprocess", sw.Time());
+    _profile->average("time.loop.preprocess", sw.Time());
 
     if (!ok) {
       TLOG(LogWarn, << "Errors detected while preprocessing result; "
@@ -462,7 +462,7 @@ namespace aprsinject {
     // try and inject record
     sw.Start();
     ok = inject(result);
-    _profile->average("time.run.inject", sw.Time());
+    _profile->average("time.loop.inject", sw.Time());
 
     if (!ok) return false;
 
@@ -470,7 +470,7 @@ namespace aprsinject {
     // ... for now
     sw.Start();
     process(result);
-    _profile->average("time.run.preprocess", sw.Time());
+    _profile->average("time.loop.process", sw.Time());
 
     return true;
   } // Worker::handle
