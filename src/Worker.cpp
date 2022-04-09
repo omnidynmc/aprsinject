@@ -522,12 +522,12 @@ namespace aprsinject {
     aprs->replaceString("aprs.packet.id", packetId);
 
     // take care of path id
-    ok = _store->setPath(packetId, result->_aprs->path());
-    if (!ok) {
-      result->_status = Result::statusDeferred;
-      result->_error = "could not get path id";
-      return false;
-    } // if
+    // ok = _store->setPath(packetId, result->_aprs->path());
+    // if (!ok) {
+    //   result->_status = Result::statusDeferred;
+    //   result->_error = "could not get path id";
+    //   return false;
+    // } // if
 
     // take care of dest id
     std::string destId;
@@ -553,12 +553,12 @@ namespace aprsinject {
 
     // if we're a position or status report we'll have some additional text as a comment
     if (result->_aprs->packetType() == aprs::APRS::APRS_PACKET_POSITION) {
-      ok = _store->setStatus(packetId, result->_aprs->status());
-      if (!ok) {
-        result->_status = Result::statusDeferred;
-        result->_error = "could not set status";
-        return false;
-      } // if
+      // ok = _store->setStatus(packetId, result->_aprs->status());
+      // if (!ok) {
+      //   result->_status = Result::statusDeferred;
+      //   result->_error = "could not set status";
+      //   return false;
+      // } // if
 
       if (aprs->isString("aprs.packet.position.maidenhead")) {
         // take care of digi id
