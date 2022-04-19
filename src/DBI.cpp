@@ -108,6 +108,53 @@ namespace aprsinject {
 
       query = _sqlpp->query();
 
+      query << "INSERT INTO station ("
+            << "station_type_id,"
+            << "name,"
+            << "callsign_id,"
+            << "name_id,"
+            << "last_position_packet_id,"
+            << "last_position_icon_id,"
+            << "last_position_symbol_table,"
+            << "last_position_symbol_code,"
+            << "last_position_maidenhead_id,"
+            << "last_position_latitude_id,"
+            << "last_position_longitude_id,"
+            << "last_position_create_ts,"
+            << "last_packet_id,"
+            << "last_packet_create_ts,"
+            << "create_ts"
+            << ") VALUES ("
+            << (aprs->isString("aprs.packet.object.name") ? "2" : "1")
+            << "," << mysqlpp::quote << (aprs->isString("aprs.packet.object.name") ? aprs->getString("aprs.packet.object.name") : aprs->getString("aprs.packet.source"))
+            << "," << callsign_id
+            << "," << name_id
+            << ",UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
+            << "," << icon_id
+            << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.table")
+            << "," << mysqlpp::quote << aprs->getString("aprs.packet.symbol.code")
+            << "," << maidenhead_id
+            << "," << aprs->latitude()
+            << "," << aprs->longitude()
+            << ",UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
+            << "," << aprs->timestamp()
+            << "," << aprs->timestamp()
+            << ") ON DUPLICATE KEY UPDATE "
+            << "station_type_id=VALUES(station_type_id),"
+            << "callsign_id=VALUES(callsign_id),"
+            << "last_position_packet_id=VALUES(last_position_packet_id),"
+            << "last_position_icon_id=VALUES(last_position_icon_id),"
+            << "last_position_symbol_table=VALUES(last_position_symbol_table),"
+            << "last_position_symbol_code=VALUES(last_position_symbol_code),"
+            << "last_position_maidenhead_id=VALUES(last_position_maidenhead_id),"
+            << "last_position_latitude_id=VALUES(last_position_latitude),"
+            << "last_position_longitude_id=VALUES(last_position_longitude),"
+            << "last_position_create_ts=VALUES(last_position_create_ts),"
+            << "last_packet_id=VALUES(last_packet_id),"
+            << "last_packet_create_ts=VALUES(last_packet_create_ts)";
+      query.execute();
+      query = _sqlpp->query();
+
       //
       // query for last_position_meta
       //
