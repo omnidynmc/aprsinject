@@ -148,8 +148,8 @@ namespace aprsinject {
             << "last_position_symbol_table=VALUES(last_position_symbol_table),"
             << "last_position_symbol_code=VALUES(last_position_symbol_code),"
             << "last_position_maidenhead_id=VALUES(last_position_maidenhead_id),"
-            << "last_position_latitude_id=VALUES(last_position_latitude),"
-            << "last_position_longitude_id=VALUES(last_position_longitude),"
+            << "last_position_latitude=VALUES(last_position_latitude),"
+            << "last_position_longitude=VALUES(last_position_longitude),"
             << "last_position_create_ts=VALUES(last_position_create_ts),"
             << "last_packet_id=VALUES(last_packet_id),"
             << "last_packet_create_ts=VALUES(last_packet_create_ts)";
