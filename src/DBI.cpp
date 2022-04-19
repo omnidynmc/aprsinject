@@ -118,8 +118,8 @@ namespace aprsinject {
             << "last_position_symbol_table,"
             << "last_position_symbol_code,"
             << "last_position_maidenhead_id,"
-            << "last_position_latitude_id,"
-            << "last_position_longitude_id,"
+            << "last_position_latitude,"
+            << "last_position_longitude,"
             << "last_position_create_ts,"
             << "last_packet_id,"
             << "last_packet_create_ts,"
@@ -136,6 +136,7 @@ namespace aprsinject {
             << "," << maidenhead_id
             << "," << aprs->latitude()
             << "," << aprs->longitude()
+            << "," << aprs->timestamp()
             << ",UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
             << "," << aprs->timestamp()
             << "," << aprs->timestamp()
