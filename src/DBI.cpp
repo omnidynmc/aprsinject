@@ -578,7 +578,7 @@ namespace aprsinject {
         query << "INSERT INTO telemetry_bits (packet_id, callsign_id, bitsense, project_title, create_ts) VALUES "
               << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
               << "," << callsign_id
-              << "," << aprs->getString("aprs.packet.telemetry.bitsense")
+              << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "maxlen:8|minlen:8|chrng:48-49", aprs, "aprs.packet.telemetry.bitsense")
               << "," << mysqlpp::quote << aprs->getString("aprs.packet.telemetry.project")
               << "," << aprs->timestamp()
               << ") ON DUPLICATE KEY UPDATE "
