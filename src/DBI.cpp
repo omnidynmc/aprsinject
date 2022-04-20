@@ -87,6 +87,7 @@ namespace aprsinject {
     std::string name_id = aprs->isString("aprs.packet.object.name.id") ? aprs->getString("aprs.packet.object.name.id") : "0";
     std::string icon_id = aprs->getString("aprs.packet.icon.id");
     std::string maidenhead_id = aprs->getString("aprs.packet.position.maidenhead.sql.id");
+    std::string station_name = aprs->isString("aprs.packet.object.name") ? aprs->getString("aprs.packet.object.name") : aprs->getString("aprs.packet.source");
 
     bool ok = false;
     try {
@@ -126,7 +127,7 @@ namespace aprsinject {
             << "create_ts"
             << ") VALUES ("
             << (aprs->isString("aprs.packet.object.name") ? "2" : "1")
-            << "," << mysqlpp::quote << (aprs->isString("aprs.packet.object.name") ? aprs->getString("aprs.packet.object.name") : aprs->getString("aprs.packet.source"))
+            << "," << mysqlpp::quote << station_name
             << "," << callsign_id
             << "," << name_id
             << ",UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
@@ -153,7 +154,24 @@ namespace aprsinject {
             << "last_position_create_ts=VALUES(last_position_create_ts),"
             << "last_packet_id=VALUES(last_packet_id),"
             << "last_packet_create_ts=VALUES(last_packet_create_ts)";
-      query.execute();
+      mysqlpp::SimpleResult res = query.execute();
+
+      std::string station_id;
+      if (res.rows() == 1) {
+        std::stringstream s;
+        s << res.insert_id();
+        station_id = s.str();
+      } // if
+      else {
+        ok = getStationId(station_name, station_id);
+
+        TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: Could not get station id, rolling back!"
+                      << std::endl);
+
+        trans.rollback();
+        return ok;
+      } // else
+      
       query = _sqlpp->query();
 
       //
@@ -291,24 +309,23 @@ namespace aprsinject {
         //
         // query for position
         //
-        query << "INSERT INTO position (packet_id, callsign_id, maidenhead_id, latitude, longitude, create_ts) VALUES "
-              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
-              << "," << callsign_id
-              << "," << aprs->getString("aprs.packet.position.maidenhead.sql.id")
-              << "," << aprs->latitude()
-              << "," << aprs->longitude()
-              << "," << aprs->timestamp()
-              << ")";
-        query.execute();
-        query = _sqlpp->query();
-
-        //
-        // query for position_meta
-        //
-        query << "INSERT INTO position_meta (packet_id, "
-              <<                             "course, speed, altitude, symbol_table, symbol_code, time_of_fix,"
-              <<                             "create_ts) VALUES "
-              << "(UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
+        query << "INSERT INTO position ("
+              << "packet_id,"
+              << "station_id,"
+              << "latitude,"
+              << "longitude,"
+              << "course,"
+              << "speed,"
+              << "altitude,"
+              << "symbol_table,"
+              << "symbol_code,"
+              << "time_of_fix,"
+              <<  "create_ts"
+              << ") VALUES ("
+              << "UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
+              << station_id
+              << aprs->latitude()
+              << aprs->longitude()
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
@@ -976,6 +993,35 @@ namespace aprsinject {
 
     return (numRows > 0) ? true : false;
   } // DBI::getDestId
+
+  bool DBI::getStationId(const std::string &name, std::string &id) {
+    int numRows = 0;
+
+    try {
+      mysqlpp::Query query = _sqlpp->query("SELECT id FROM station WHERE name=%0q:name LIMIT 1");
+      query.parse();
+
+      mysqlpp::StoreQueryResult res = query.store(name);
+
+      for(size_t i=0; i < res.num_rows();  i++)
+        id = res[i][0].c_str();
+
+      numRows = res.num_rows();
+    } // try
+    catch(const mysqlpp::BadQuery &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getStationId}: #"
+                    << e.errnum()
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+    catch(const mysqlpp::Exception &e) {
+      TLOG(LogWarn, << "*** MySQL++ Error{getStationId}: "
+                    << " " << e.what()
+                    << std::endl);
+    } // catch
+
+    return (numRows > 0) ? true : false;
+  } // DBI::getStationId
 
   bool DBI::getDigiId(const std::string &name, std::string &id) {
     int numRows = 0;

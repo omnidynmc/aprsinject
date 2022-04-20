@@ -72,6 +72,7 @@ namespace aprsinject {
       bool getPacketId(const std::string &);
       bool getPathId(const std::string &, std::string &);
       bool getStatusId(const std::string &, std::string &);
+      bool getStationId(const std::string &, std::string &);
       bool getIconBySymbol(const std::string &symbol_table,
                            const std::string &symbol_code,
                            const int course,
