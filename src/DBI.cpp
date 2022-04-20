@@ -322,12 +322,12 @@ namespace aprsinject {
               << "symbol_table,"
               << "symbol_code,"
               << "time_of_fix,"
-              <<  "create_ts"
+              << "create_ts"
               << ") VALUES ("
               << "UUID_STRIP(" << mysqlpp::quote << packet_id << ")"
-              << station_id
-              << aprs->latitude()
-              << aprs->longitude()
+              << "," << station_id
+              << "," << aprs->latitude()
+              << "," << aprs->longitude()
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.direction")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.dirspd.speed")
               << "," << mysqlpp::quote << NULL_VALID_OPTIONPP(validator, "is:int", aprs, "aprs.packet.altitude")
