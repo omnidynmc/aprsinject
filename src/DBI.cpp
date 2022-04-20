@@ -165,11 +165,13 @@ namespace aprsinject {
       else {
         ok = getStationId(station_name, station_id);
 
-        TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: Could not get station id, rolling back!"
-                      << std::endl);
+        if (ok == false) {
+          TLOG(LogWarn, << "*** MySQL++ Error{Inject::position}: Could not get station id, rolling back!"
+                        << std::endl);
 
-        trans.rollback();
-        return ok;
+          trans.rollback();
+          return ok;
+        } // if
       } // else
       
       query = _sqlpp->query();
