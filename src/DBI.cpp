@@ -411,6 +411,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
@@ -604,6 +605,8 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
@@ -723,6 +726,8 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
@@ -810,6 +815,7 @@ namespace aprsinject {
                     << " " << e.what()
                     << std::endl);
 
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       STRINGTOOL_DEBUG_STRINGS(aprs, stringList, "root");
@@ -853,6 +859,8 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getIconBySymbol}: "
@@ -889,6 +897,8 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getCallsignId}: "
@@ -919,6 +929,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -957,6 +968,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getNameId}: "
@@ -986,6 +998,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getDestId}: "
@@ -1015,6 +1028,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getStationId}: "
@@ -1044,6 +1058,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getDigiId}: "
@@ -1073,6 +1088,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
     } // catch
     catch(const mysqlpp::Exception &e) {
       TLOG(LogWarn, << "*** MySQL++ Error{getMaidenheadId}: "
@@ -1103,6 +1119,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1142,6 +1159,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1181,6 +1199,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1222,6 +1241,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1251,6 +1271,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1287,6 +1308,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1315,6 +1337,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1347,6 +1370,7 @@ namespace aprsinject {
                     << " " << e.what()
                     << ": " << packetId
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
@@ -1382,6 +1406,7 @@ namespace aprsinject {
                     << e.errnum()
                     << " " << e.what()
                     << std::endl);
+      if (e.errnum() >= 2000 && e.errnum() < 3000) reconnect();
       return false;
     } // catch
     catch(mysqlpp::Exception &e) {
